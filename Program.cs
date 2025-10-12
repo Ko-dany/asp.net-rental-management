@@ -1,10 +1,30 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Midterm_EquipmentRental.Data;
+using Midterm_EquipmentRental.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 /* Set up In-memory database */
 builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("MidtremDb-DanyKo-GabrielSiewert"));
+
+/* Register Repository, Unit Of Work pattern */
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+
+/* Add JWT authentication */
+var jwtSecret = builder.Configuration["JwtSettings:Secret"];
+
+builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSecret))
+    };
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

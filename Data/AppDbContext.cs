@@ -134,7 +134,7 @@ namespace Midterm_EquipmentRental.Data
                         Id = 1,
                         Name = "Dany Ko",
                         Email = "dko8957@conestogac.on.ca",
-                        UserName = "Dandan",
+                        UserName = "Dany",
                         Password = "Danypassword",
                         Role = UserRole.Admin
                     },
@@ -143,7 +143,7 @@ namespace Midterm_EquipmentRental.Data
                         Id = 2,
                         Name = "Gabriel Siewert",
                         Email = "Gsiewert2384@conestogac.on.ca",
-                        UserName = "Gabu",
+                        UserName = "Gabe",
                         Password = "Gabepassword",
                         Role = UserRole.User
                     }
