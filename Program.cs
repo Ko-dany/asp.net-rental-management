@@ -9,7 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("MidtremDb-DanyKo-GabrielSiewert"));
 
 /* Register Repository, Unit Of Work pattern */
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
 
 /* Add JWT authentication */
 var jwtSecret = builder.Configuration["JwtSettings:Secret"];

@@ -14,10 +14,10 @@ namespace Midterm_EquipmentRental.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly ICustomerRepository _context;
+        private readonly IUnitOfWork _context;
         private readonly IConfiguration _configuration;
 
-        public AuthController(ICustomerRepository context, IConfiguration configuration)
+        public AuthController(IUnitOfWork context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
@@ -26,7 +26,7 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpPost("login")]
         public ActionResult Login([FromBody] LoginRequest loginRequest)
         {
-            var user = _context.GetCustomerDB().FirstOrDefault(c => c.UserName == loginRequest.Username && c.Password == loginRequest.Password);
+            var user = _context.Customers.GetCustomerDB().FirstOrDefault(c => c.UserName == loginRequest.Username && c.Password == loginRequest.Password);
             if(user == null) { return Unauthorized("Invalid username or password"); }
             var token = GenerateToken(user);
             return Ok(new { token });
