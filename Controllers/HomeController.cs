@@ -4,6 +4,7 @@ using Midterm_EquipmentRental.Models;
 
 namespace Midterm_EquipmentRental.Controllers
 {
+    /* To be deleted */
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
