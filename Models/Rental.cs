@@ -5,8 +5,8 @@
         public int Id { get; set; }
         public int EquipmentId { get; set; }
         public int CustomerId { get; set; }
-        public int IssuedAt { get; set; }
-        public int ReturnedAt { get; set; }
+        public DateTime IssuedAt { get; set; }
+        public DateTime ReturnedAt { get; set; }
 
     }
 }
