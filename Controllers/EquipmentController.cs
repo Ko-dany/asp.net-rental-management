@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Midterm_EquipmentRental.Models;
 using Midterm_EquipmentRental.Repositories;
 
@@ -6,7 +7,7 @@ namespace Midterm_EquipmentRental.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EquipmentController : ControllerBase
+    public class EquipmentController : Controller
     {
         private readonly IUnitOfWork _context;
         
@@ -15,13 +16,16 @@ namespace Midterm_EquipmentRental.Controllers
             _context = context;
         }
 
+        //[Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<Equipment>> GetAllEquipment()
         {
             var equipments = _context.Equipments.GetAllEquipment();
-            return Ok(equipments);
+            ViewBag.Status = "All";
+            return View("Index", equipments);
         }
 
+        //[Authorize]
         [HttpGet("{id}")]
         public ActionResult<Equipment> GetEquipmentById(int id)
         {
@@ -29,6 +33,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok(equipment);
         }
 
+        //[Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult AddEquipment(Equipment equipment)
         {
@@ -38,6 +43,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();            
         }
 
+        //[Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public ActionResult UpdateEquipment(int id, Equipment equipment)
         {
@@ -48,7 +54,8 @@ namespace Midterm_EquipmentRental.Controllers
             _context.Complete();
             return Ok();
         }
-
+        
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public ActionResult DeleteEquipment(int id)
         {
@@ -59,18 +66,22 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();
         }
 
+        //[Authorize]
         [HttpGet("available")]
         public ActionResult<IEnumerable<Equipment>> GetAllAvailableEquipment()
         {
             var equipments = _context.Equipments.GetAllAvailableEquipment();
-            return Ok(equipments);
+            ViewBag.Status = "Available";
+            return View("Index", equipments);
         }
 
+        //[Authorize(Roles = "Admin")]
         [HttpGet("rented")]
         public ActionResult<IEnumerable<Equipment>> GetAllRentedEquipment()
         {
             var equipments = _context.Equipments.GetAllRentedEquipment();
-            return Ok(equipments);
+            ViewBag.Status = "Rented";
+            return View("Index", equipments);
         }
     }
 }
