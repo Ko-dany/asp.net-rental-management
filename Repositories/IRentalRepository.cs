@@ -1,4 +1,6 @@
-﻿namespace Midterm_EquipmentRental.Models
+﻿using Midterm_EquipmentRental.Models;
+
+namespace Midterm_EquipmentRental.Repositories
 {
     public interface IRentalRepository
     {

@@ -1,6 +1,4 @@
-﻿using Midterm_EquipmentRental.Models;
-
-namespace Midterm_EquipmentRental.Repositories
+﻿namespace Midterm_EquipmentRental.Repositories
 {
     public interface IUnitOfWork
     {

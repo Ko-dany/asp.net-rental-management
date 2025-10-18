@@ -1,5 +1,4 @@
 ﻿using Midterm_EquipmentRental.Data;
-using Midterm_EquipmentRental.Models;
 
 namespace Midterm_EquipmentRental.Repositories
 {

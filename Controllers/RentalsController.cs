@@ -2,16 +2,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Midterm_EquipmentRental.Models;
 using Midterm_EquipmentRental.Repositories;
+using Midterm_EquipmentRental.Services;
 
 namespace Midterm_EquipmentRental.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RentalController : Controller
+    public class RentalsController : Controller
     {
-        private readonly IUnitOfWork _context;
+        private readonly IRentalService _context;
 
-        public RentalController(IUnitOfWork context)
+        public RentalsController(IRentalService context)
         {
             _context = context;
         }
@@ -20,15 +21,15 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Rental>> GetAllRentals()
         {
-            var rentals = _context.Rentals.GetAllRentals();
-            return View("Index", rentals);
+            var rentals = _context.GetAllRentals();
+            return Ok(rentals);
         }
 
         [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpGet("{id}")]
         public ActionResult<Rental> GetRentalById(int id)
         {
-            var rental = _context.Rentals.GetRentalById(id);
+            var rental = _context.GetRentalById(id);
             return Ok(rental);
         }
 
@@ -37,8 +38,7 @@ namespace Midterm_EquipmentRental.Controllers
         public ActionResult IssueEquipment(Rental rental)
         {
             if (rental == null) { return BadRequest(); }
-            _context.Rentals.IssueEquipment(rental);
-            _context.Complete();
+            _context.IssueEquipment(rental);
             return Ok();
         }
 
@@ -47,8 +47,7 @@ namespace Midterm_EquipmentRental.Controllers
         public ActionResult ReturnEquipment(Rental rental)
         {
             if (rental == null) { return BadRequest(); }
-            _context.Rentals.ReturnEquipment(rental);
-            _context.Complete();
+            _context.ReturnEquipment(rental);
             return Ok();
         }
 
@@ -56,40 +55,39 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpGet("active")]
         public ActionResult<IEnumerable<Rental>> GetActiveRentals()
         {
-            var rentals = _context.Rentals.GetActiveRentals();
-            return View("Index", rentals);
+            var rentals = _context.GetActiveRentals();
+            return Ok(rentals);
         }
 
         [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpGet("completed")]
         public ActionResult<IEnumerable<Rental>> GetCompletedRentals()
         {
-            var rentals = _context.Rentals.GetCompletedRentals();
-            return View("Index", rentals);
+            var rentals = _context.GetCompletedRentals();
+            return Ok(rentals);
         }
 
         [Authorize(Roles = UserRole.Admin)]
         [HttpGet("overdue")]
         public ActionResult<IEnumerable<Rental>> GetOverdueRentals()
         {
-            var rentals = _context.Rentals.GetOverdueRentals();
-            return View("Index", rentals);
+            var rentals = _context.GetOverdueRentals();
+            return Ok(rentals);
         }
 
         [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpGet("equipment/{id}")]
         public ActionResult<IEnumerable<Rental>> GetRentalHistoryByEquipmentId(int id)
         {
-            var rentals = _context.Rentals.GetRentalHistoryByEquipmentId(id);
-            return View("Index", rentals);
+            var rentals = _context.GetRentalHistoryByEquipmentId(id);
+            return Ok(rentals);
         }
 
         [Authorize(Roles = UserRole.Admin)]
         [HttpPut]
         public ActionResult ExtendRentalById(int id)
         {
-            _context.Rentals.ExtendRentalById(id);
-            _context.Complete();
+            _context.ExtendRentalById(id);
             return Ok();
         }
 
@@ -97,8 +95,7 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpDelete]
         public ActionResult CancelRentalById(int id)
         {
-            _context.Rentals.CancelRentalById(id);
-            _context.Complete();
+            _context.CancelRentalById(id);
             return Ok();
         }
     }

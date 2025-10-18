@@ -193,6 +193,15 @@ namespace Midterm_EquipmentRental.Data
                     IssuedAt = new DateTime(2025, 9, 25),
                     ReturnedAt = new DateTime(2025, 9, 30),
                     Status = RentalStatus.Overdue
+                },
+                new Rental
+                {
+                    Id = 6,
+                    EquipmentId = 1,   // Excavator
+                    CustomerId = 2,
+                    IssuedAt = new DateTime(2025, 11, 2),
+                    ReturnedAt = new DateTime(2025, 11, 17),
+                    Status = RentalStatus.Returned
                 }
             );
         }
