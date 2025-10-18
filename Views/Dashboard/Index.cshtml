@@ -1,5 +1,149 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Midterm_EquipmentRental.Models.ViewModels.DashboardViewModel
+
 @{
+    ViewData["Title"] = "Equipment Rental Dashboard";
+
+    // Toggle here (or rely on Model.IsAdmin):
+    bool isAdmin = Model?.IsAdmin ?? false;
+
+    // Quick shorthands
+    int totalEquipment = Model?.TotalEquipment ?? 0;
+    int availableCount = Model?.AvailableCount ?? 0;
+    int rentedCount = Model?.RentedCount ?? 0;
+    int overdueCount = Model?.OverdueCount ?? 0;
+    int totalCustomers = Model?.TotalCustomers ?? 0;
+
+    int activeRentals = Model?.ActiveRentals ?? 0;
+    int overdueRentals = Model?.OverdueRentals ?? 0;
+
+    string userName = Model?.UserName ?? "user";
+    string roleName = Model?.RoleName ?? (isAdmin ? "Admin" : "User");
+    string sysStatus = Model?.SystemStatus ?? "Online";
 }
+
+<div class="container mt-4">
+    <h2 class="display-5 fw-semibold">Equipment Rental Dashboard</h2>
+    <p class="text-muted">Welcome to the Equipment Rental Management System</p>
+
+    <!-- Summary cards row -->
+    <div class="row g-4 mb-2">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-1">@totalEquipment</h3>
+                    <div class="card-text">Total Equipment</div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="#" class="text-white text-decoration-underline">View All</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-success h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-1">@availableCount</h3>
+                    <div class="card-text">Available</div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="#" class="text-white text-decoration-underline">View Available</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-warning h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-1">@rentedCount</h3>
+                    <div class="card-text">Currently Rented</div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="#" class="text-white text-decoration-underline">View Rented</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-danger h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-1">@overdueCount</h3>
+                    <div class="card-text">Overdue Rentals</div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    @if (isAdmin)
+                    {
+                        <a href="#" class="text-white text-decoration-underline">View Overdue</a>
+                    }
+                    else
+                    {
+                        <span class="text-white-50">Admin Access Required</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional second card (matches your admin screenshot) -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-info h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-1">@totalCustomers</h3>
+                    <div class="card-text">Total Customers</div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="#" class="text-white text-decoration-underline">View All</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom row: Quick Actions + System Status -->
+    <div class="row g-4">
+        <!-- Quick Actions -->
+        <div class="col-lg-7">
+            <div class="card h-100">
+                <div class="card-header fw-bold">Quick Actions</div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <a href="#" class="btn btn-primary btn-lg">Issue Equipment</a>
+                        <a href="#" class="btn btn-success btn-lg">Return Equipment</a>
+
+                        @if (isAdmin)
+                        {
+                            <a href="#" class="btn btn-info btn-lg">View All Rentals</a>
+                            <a href="#" class="btn btn-secondary btn-lg">Add Equipment</a>
+                            <a href="#" class="btn btn-secondary btn-lg">Add Customer</a>
+                            <a href="#" class="btn btn-danger btn-lg">View Overdue Rentals</a>
+                        }
+                        else
+                        {
+                            <a href="#" class="btn btn-info btn-lg">View My Rentals</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header fw-bold">System Status</div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Active Rentals:</strong> @activeRentals</p>
+                    <p class="mb-2">
+                        <strong>Overdue Rentals:</strong>
+                        <span class="@(overdueRentals > 0 ? "text-danger" : "text-success")">@overdueRentals</span>
+                    </p>
+                    <p class="mb-2"><strong>Logged in as:</strong> @userName (@roleName)</p>
+                    <p class="mb-0">
+                        <strong>System Status:</strong>
+                        <span class="@(sysStatus.Equals("Online", StringComparison.OrdinalIgnoreCase) ? "text-success" : "text-danger")">
+                            @sysStatus
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
