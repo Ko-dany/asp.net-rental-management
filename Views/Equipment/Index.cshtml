@@ -1,42 +1,56 @@
-﻿@using System.Text.RegularExpressions
-@model IEnumerable<Midterm_EquipmentRental.Models.Equipment>
+﻿@model Midterm_EquipmentRental.Models.ViewModels.EquipmentListViewModel
+@using System.Text.RegularExpressions
+
 @{
     ViewData["Title"] = "Equipment";
 
-    // read current filter from query or ViewBag.Status (controller can set ViewBag.Status = "All|Available|Rented")
-    var current = (ViewBag.Status as string) ?? (Context.Request.Query["status"].ToString() ?? "All");
+    // Role toggle (can be set in controller via Model.IsAdmin)
+    bool isAdmin = Model?.IsAdmin ?? false;
 
+    // Current filter (All / Available / Rented)
+    string current = (Model?.Filter ?? "All")?.Trim()!;
+    // Defensive copy of items
+    var allItems = (Model?.Items ?? Enumerable.Empty<Midterm_EquipmentRental.Models.Equipment>()).ToList();
+
+    // Apply filter in-view (until controller wires up real routes)
+    IEnumerable<Midterm_EquipmentRental.Models.Equipment> items = current switch
+    {
+        "Available" => allItems.Where(e => e.IsAvailable),
+        "Rented" => allItems.Where(e => !e.IsAvailable),
+        _ => allItems
+    };
+
+    // Little helpers
     string TabClass(string key) =>
-        key switch
-        {
-            "All" => current == "All" ? "btn btn-primary" : "btn btn-outline-primary",
-            "Available" => current == "Available" ? "btn btn-success" : "btn btn-outline-success",
-            "Rented" => current == "Rented" ? "btn btn-warning" : "btn btn-outline-warning",
-            _ => "btn btn-outline-secondary"
-        };
+        key == "All" ? (current == "All" ? "btn btn-primary" : "btn btn-outline-primary") :
+        key == "Available" ? (current == "Available" ? "btn btn-success" : "btn btn-outline-success") :
+        key == "Rented" ? (current == "Rented" ? "btn btn-warning" : "btn btn-outline-warning") :
+                             "btn btn-outline-secondary";
 
-    string BadgeClass(bool isAvailable) =>
+    string StatusBadge(bool isAvailable) =>
         isAvailable ? "badge rounded-pill bg-success" : "badge rounded-pill bg-warning text-dark";
 
     string StatusText(bool isAvailable) => isAvailable ? "Available" : "Rented";
 
-    // Pretty print enum names like HeavyMachinery -> Heavy Machinery, PowerTools -> Power Tools
     string Humanize(string pascal) => Regex.Replace(pascal, "([a-z])([A-Z])", "$1 $2");
 }
 
 <div class="container mt-4">
 
-    <!-- Header + Add button -->
+    <!-- Header + Add button (admin only) -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Equipment</h2>
-        <a asp-controller="Equipment" asp-action="Create" class="btn btn-primary">Add New Equipment</a>
+        @if (isAdmin)
+        {
+            <a href="#" class="btn btn-primary">Add New Equipment</a>
+        }
     </div>
 
-    <!-- Filter pills -->
+    <!-- Filter tabs (just # for now) -->
     <div class="btn-group mb-3" role="group" aria-label="Filters">
-        <a asp-controller="Equipment" asp-action="GetAllEquipment" class="@TabClass("All")">All Equipment</a>
-        <a asp-controller="Equipment" asp-action="GetAllAvailableEquipment" class="@TabClass("Available")">Available</a>
-        <a asp-controller="Equipment" asp-action="GetAllRentedEquipment" class="@TabClass("Rented")">Rented</a>
+        <a href="#" class="@TabClass("All")">All Equipment</a>
+        <a href="#" class="@TabClass("Available")">Available</a>
+        <a href="#" class="@TabClass("Rented")">Rented</a>
     </div>
 
     <!-- Table -->
@@ -50,30 +64,32 @@
                     <th>Condition</th>
                     <th>Status</th>
                     <th>Created At</th>
-                    <th class="text-end" style="width:10rem;">Actions</th>
+                    @if (isAdmin)
+                    {
+                        <th class="text-end" style="width:10rem;">Actions</th>
+                    }
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var e in items)
                 {
                     <tr>
-                        <td>@item.Id</td>
-                        <td>@item.Name</td>
-                        <td>@Humanize(item.Category.ToString())</td>
-                        <td>@item.Condition</td>
+                        <td>@e.Id</td>
+                        <td>@e.Name</td>
+                        <td>@Humanize(e.Category.ToString())</td>
+                        <td>@e.Condition</td>
                         <td>
-                            <span class="@BadgeClass(item.IsAvailable)">@StatusText(item.IsAvailable)</span>
+                            <span class="@StatusBadge(e.IsAvailable)">@StatusText(e.IsAvailable)</span>
                         </td>
-                        <td>
-                            @item.CreatedAt.ToString("yyyy-MM-dd HH:mm")
-                        </td>
-                        <td class="text-end">
-                            <a asp-controller="Equipment" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-2">Edit</a>
-                            <form asp-controller="Equipment" asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                            </form>
-                        </td>
+                        <td>@e.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+
+                        @if (isAdmin)
+                        {
+                            <td class="text-end">
+                                <a href="#" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+                                <a href="#" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>

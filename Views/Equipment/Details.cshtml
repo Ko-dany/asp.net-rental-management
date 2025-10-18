@@ -1,5 +1,41 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Midterm_EquipmentRental.Models.Equipment
+@using System.Text.RegularExpressions
+
 @{
+    ViewData["Title"] = "Equipment Details";
+
+    string Humanize(string s) => Regex.Replace(s, "([a-z])([A-Z])", "$1 $2");
+    string StatusBadge(bool isAvailable) =>
+        isAvailable ? "badge rounded-pill bg-success" : "badge rounded-pill bg-warning text-dark";
+    string StatusText(bool isAvailable) => isAvailable ? "Available" : "Rented";
 }
+
+<div class="container mt-4">
+    <h2 class="mb-3">Customer Details</h2> @* keep heading style consistent; feel free to rename *@
+
+    <div class="card mb-4" style="max-width: 820px;">
+        <div class="card-body">
+            <h5 class="card-title mb-3">@Model.Name</h5>
+
+            <div class="mb-2"><strong>ID:</strong> @Model.Id</div>
+            <div class="mb-2"><strong>Category:</strong> @Humanize(Model.Category.ToString())</div>
+            <div class="mb-2"><strong>Condition:</strong> @Model.Condition</div>
+            <div class="mb-2">
+                <strong>Status:</strong>
+                <span class="@StatusBadge(Model.IsAvailable)">@StatusText(Model.IsAvailable)</span>
+            </div>
+            <div class="mb-2"><strong>Rental Price:</strong> @Model.RentalPrice.ToString("C")</div>
+            <div class="mb-3"><strong>Created At:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <div class="mb-3"><strong>Description:</strong><br />@Model.Description</div>
+            }
+
+            <a href="#" class="btn btn-primary me-2">Edit</a>
+            <a href="#" class="btn btn-danger">Delete</a>
+        </div>
+    </div>
+
+    <a href="#" class="btn btn-secondary">Back to List</a>
+</div>

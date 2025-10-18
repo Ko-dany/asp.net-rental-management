@@ -1,5 +1,73 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Midterm_EquipmentRental.Models.ViewModels.EquipmentEditViewModel
+@using Midterm_EquipmentRental.Models
+
 @{
+    ViewData["Title"] = "Edit Equipment";
 }
+
+<div class="container mt-4">
+    <h2 class="mb-4">Edit Equipment</h2>
+
+    <div class="row g-4">
+        <!-- Form -->
+        <div class="col-lg-7">
+            <form method="post" action="#" class="needs-validation" novalidate>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <!-- ID (read-only) -->
+                <div class="mb-3">
+                    <label class="form-label">ID</label>
+                    <input class="form-control" value="@Model.Id" readonly disabled />
+                    <!-- disabled inputs don't post; include hidden so ID is submitted -->
+                    <input type="hidden" asp-for="Id" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Equipment Name</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Category" class="form-label">Category</label>
+                    <input asp-for="Category" class="form-control" />
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Condition" class="form-label">Condition</label>
+                    <select asp-for="Condition" class="form-select">
+                        @foreach (var c in Enum.GetValues(typeof(EquipmentCondition)))
+                        {
+                            <option value="@c" selected="@(Model.Condition.Equals(c))">@c</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Condition" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input asp-for="IsAvailable" class="form-check-input" />
+                    <label asp-for="IsAvailable" class="form-check-label">Is Available</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                <a href="#" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+
+        <!-- Instructions -->
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-header fw-semibold">Instructions</div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li>Fields are pre-filled with the current equipment data.</li>
+                        <li>ID is shown for reference and cannot be edited.</li>
+                        <li>Update details and click <strong>Save Changes</strong>.</li>
+                        <li>Use <strong>Cancel</strong> to return without saving.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
