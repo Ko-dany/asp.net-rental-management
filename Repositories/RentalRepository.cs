@@ -1,6 +1,7 @@
 ﻿using Midterm_EquipmentRental.Data;
+using Midterm_EquipmentRental.Models;
 
-namespace Midterm_EquipmentRental.Models
+namespace Midterm_EquipmentRental.Repositories
 {
     public class RentalRepository : IRentalRepository
     {
@@ -36,17 +37,17 @@ namespace Midterm_EquipmentRental.Models
         {
             return _context.Rentals.Where(r => r.Status == RentalStatus.Returned);
         }
-        
+
         public IEnumerable<Rental> GetOverdueRentals()
         {
             return _context.Rentals.Where(r => r.Status == RentalStatus.Overdue);
         }
-        
+
         public IEnumerable<Rental> GetRentalHistoryByEquipmentId(int id)
         {
             return _context.Rentals.Where(r => r.EquipmentId == id);
         }
-        
+
         public void ExtendRentalById(int id)
         {
             Rental rentalToExtend = GetRentalById(id);

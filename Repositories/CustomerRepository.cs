@@ -33,16 +33,16 @@ namespace Midterm_EquipmentRental.Repositories
 
         public void DeleteCustomer(Customer customer) { _context.Customers.Remove(customer); }
 
-        public IEnumerable<Rental> GetCustomerRentalHistoryById(int id)
+        public IEnumerable<Rental>? GetCustomerRentalHistoryById(int id)
         {
-            Customer customer = _context.Customers.Find(id);
+            Customer customer = GetCustomerById(id);
             return customer.RentalHistory;
         }
 
-        public IEnumerable<Rental> GetCustomerActiveRentalsById(int id)
+        public IEnumerable<Rental>? GetCustomerActiveRentalsById(int id)
         {
-            Customer customer = _context.Customers.Find(id);
-            return customer.RentalHistory.Where(r => r.Status == RentalStatus.Active);
+            IEnumerable<Rental>? customerRentalHistory = GetCustomerRentalHistoryById(id);
+            return customerRentalHistory?.Where(r => r.Status == RentalStatus.Active);
         }
     }
 }

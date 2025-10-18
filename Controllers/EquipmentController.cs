@@ -2,16 +2,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Midterm_EquipmentRental.Models;
 using Midterm_EquipmentRental.Repositories;
+using Midterm_EquipmentRental.Services;
 
 namespace Midterm_EquipmentRental.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EquipmentController : Controller
+    public class EquipmentController : ControllerBase
     {
-        private readonly IUnitOfWork _context;
+        private readonly IEquipmentService _context;
         
-        public EquipmentController(IUnitOfWork context)
+        public EquipmentController(IEquipmentService context)
         {
             _context = context;
         }
@@ -20,16 +21,15 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Equipment>> GetAllEquipment()
         {
-            var equipments = _context.Equipments.GetAllEquipment();
-            ViewBag.Status = "All";
-            return View("Index", equipments);
+            var equipments = _context.GetAllEquipment();
+            return Ok(equipments);
         }
 
         [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpGet("{id}")]
         public ActionResult<Equipment> GetEquipmentById(int id)
         {
-            var equipment = _context.Equipments.GetEquipmentById(id);
+            var equipment = _context.GetEquipmentById(id);
             return Ok(equipment);
         }
 
@@ -38,8 +38,7 @@ namespace Midterm_EquipmentRental.Controllers
         public ActionResult AddEquipment(Equipment equipment)
         {
             if(equipment == null) { return BadRequest(); }
-            _context.Equipments.AddEquipment(equipment);
-            _context.Complete();
+            _context.AddEquipment(equipment);
             return Ok();            
         }
 
@@ -47,11 +46,10 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpPut("{id}")]
         public ActionResult UpdateEquipment(int id, Equipment equipment)
         {
-            var existingEquipment = _context.Equipments.GetEquipmentById(id);
+            var existingEquipment = _context.GetEquipmentById(id);
             if (existingEquipment == null) { return NotFound("Equipment with the given ID does not exist"); }
             if(id != existingEquipment.Id) { return BadRequest("ID mismatch"); }
-            _context.Equipments.UpdateEquipment(equipment);
-            _context.Complete();
+            _context.UpdateEquipment(equipment);
             return Ok();
         }
 
@@ -59,10 +57,9 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpDelete("{id}")]
         public ActionResult DeleteEquipment(int id)
         {
-            var existingEquipment = _context.Equipments.GetEquipmentById(id);
+            var existingEquipment = _context.GetEquipmentById(id);
             if (existingEquipment == null) { return NotFound("Equipment with the given ID does not exist"); }
-            _context.Equipments.DeleteEquipment(existingEquipment);
-            _context.Complete();
+            _context.DeleteEquipment(existingEquipment);
             return Ok();
         }
 
@@ -70,18 +67,16 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpGet("available")]
         public ActionResult<IEnumerable<Equipment>> GetAllAvailableEquipment()
         {
-            var equipments = _context.Equipments.GetAllAvailableEquipment();
-            ViewBag.Status = "Available";
-            return View("Index", equipments);
+            var equipments = _context.GetAllAvailableEquipment();
+            return Ok(equipments);
         }
 
         [Authorize(Roles = UserRole.Admin)]
         [HttpGet("rented")]
         public ActionResult<IEnumerable<Equipment>> GetAllRentedEquipment()
         {
-            var equipments = _context.Equipments.GetAllRentedEquipment();
-            ViewBag.Status = "Rented";
-            return View("Index", equipments);
+            var equipments = _context.GetAllRentedEquipment();
+            return Ok(equipments);
         }
     }
 }

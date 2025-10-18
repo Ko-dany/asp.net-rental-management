@@ -2,19 +2,24 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Midterm_EquipmentRental.Data;
-using Midterm_EquipmentRental.Models;
 using Midterm_EquipmentRental.Repositories;
+using Midterm_EquipmentRental.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 /* Set up In-memory database */
-builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("MidtremDb-DanyKo-GabrielSiewert"));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("MidtermDb-DanyKo-GabrielSiewert"));
 
-/* Register Repository, Unit Of Work pattern */
+/* Register Repository, Unit Of Work, Service patterns */
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
+
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IEquipmentService, EquipmentService>();
+builder.Services.AddScoped<IRentalService, RentalService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 /* Register HttpClient */
 builder.Services.AddHttpClient();
@@ -90,6 +95,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Login}/{id?}");
+    pattern: "{controller=View}/{action=Login}/{id?}");
 
 app.Run();

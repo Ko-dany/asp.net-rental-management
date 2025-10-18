@@ -1,19 +1,19 @@
-﻿using System.Diagnostics;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Midterm_EquipmentRental.Models;
+using Midterm_EquipmentRental.Services;
 
 namespace Midterm_EquipmentRental.Controllers
 {
-    public class LoginController : Controller
+    public class ViewController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IAuthService _authService;
 
-        public LoginController(IHttpClientFactory httpClientFactory)
+        public ViewController(IAuthService authService)
         {
-            _httpClientFactory = httpClientFactory;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -29,45 +29,29 @@ namespace Midterm_EquipmentRental.Controllers
             {
                 return View(model);
             }
-            var client = _httpClientFactory.CreateClient();
             var loginRequest = new LoginRequest
             {
                 Username = model.Username,
                 Password = model.Password
             };
-            var response = await client.PostAsJsonAsync("https://localhost:7048/api/auth/login", loginRequest);
 
-            if (response.IsSuccessStatusCode)
+            var user = _authService.ValidateCredentials(loginRequest);
+            
+            if (user == null)
             {
-                var json = await response.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                var result = JsonSerializer.Deserialize<JsonElement>(json, options);
-
-                var token = result.GetProperty("token").GetString();
-                model.Token = token;
-                HttpContext.Session.SetString("JwtToken", model.Token);
-                model.ErrorMessage = null;
-
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(token);
-                var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
-
-                return roleClaim switch
-                {
-                    UserRole.Admin => RedirectToAction("AdminDashboard"),
-                    UserRole.User => RedirectToAction("UserDashboard"),
-                    _ => RedirectToAction("Login")
-                };
-            }
-            else
-            {
-                model.Token = null;
                 model.ErrorMessage = "Invalid username or password";
                 return View(model);
             }
+
+            var token = _authService.GenerateToken(user);
+            HttpContext.Session.SetString("JwtToken", token);
+
+            return user.Role switch
+            {
+                UserRole.Admin => RedirectToAction("AdminDashboard"),
+                UserRole.User => RedirectToAction("UserDashboard"),
+                _ => RedirectToAction("Login")
+            };
         }
 
 
