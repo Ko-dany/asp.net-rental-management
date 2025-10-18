@@ -51,5 +51,16 @@ namespace Midterm_EquipmentRental.Controllers
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        [HttpGet("session")]
+        public IActionResult CheckToken()
+        {
+            var token = HttpContext.Session.GetString("JwtToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                return Ok("No token found in session");
+            }
+            return Ok($"Token in session: {token}");
+        }
     }
 }

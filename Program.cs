@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Midterm_EquipmentRental.Data;
@@ -32,6 +33,19 @@ var jwtSecret = builder.Configuration["JwtSettings:Secret"];
 
 builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
 {
+    /* Read the JWT from user's sessions */
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var token = context.HttpContext.Session.GetString("JwtToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+            }
+            return Task.CompletedTask;
+        }
+    };
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = false,

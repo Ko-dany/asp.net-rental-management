@@ -48,7 +48,7 @@ namespace Midterm_EquipmentRental.Controllers
 
                 var token = result.GetProperty("token").GetString();
                 model.Token = token;
-                HttpContext.Session.SetString("JWToken", model.Token);
+                HttpContext.Session.SetString("JwtToken", model.Token);
                 model.ErrorMessage = null;
 
                 var handler = new JwtSecurityTokenHandler();
@@ -74,7 +74,7 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpGet]
         public IActionResult AdminDashboard()
         {
-            var token = HttpContext.Session.GetString("JWToken");
+            var token = HttpContext.Session.GetString("JwtToken");
             if (string.IsNullOrEmpty(token)) return RedirectToAction("Login");
 
             var handler = new JwtSecurityTokenHandler();
@@ -90,7 +90,7 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpGet]
         public IActionResult UserDashboard()
         {
-            var token = HttpContext.Session.GetString("JWToken");
+            var token = HttpContext.Session.GetString("JwtToken");
             if (string.IsNullOrEmpty(token)) return RedirectToAction("Login");
 
             var handler = new JwtSecurityTokenHandler();
