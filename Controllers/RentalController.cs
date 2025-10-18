@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Midterm_EquipmentRental.Repositories;
 
 namespace Midterm_EquipmentRental.Controllers
 {
@@ -6,5 +7,11 @@ namespace Midterm_EquipmentRental.Controllers
     [ApiController]
     public class RentalController : ControllerBase
     {
+        private readonly IUnitOfWork _context;
+
+        public RentalController(IUnitOfWork context)
+        {
+            _context = context;
+        }
     }
 }
