@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Midterm_EquipmentRental.Models;
 using Midterm_EquipmentRental.Repositories;
 
@@ -15,7 +16,7 @@ namespace Midterm_EquipmentRental.Controllers
             _context = context;
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRole.Admin)]
         [HttpGet]
         public ActionResult<IEnumerable<Customer>> GetAllCustomers()
         {
@@ -23,7 +24,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("Index", customers);
         }
 
-        //[Authorize]
+        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpGet("{id}")]
         public ActionResult<Customer> GetCustomertById(int id)
         {
@@ -31,7 +32,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok(customer);
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRole.Admin)]
         [HttpPost]
         public ActionResult AddCustomer(Customer customer)
         {
@@ -41,7 +42,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();
         }
 
-        //[Authorize]
+        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpPut("{id}")]
         public ActionResult UpdateCustomer(int id, Customer customer)
         {
@@ -53,7 +54,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRole.Admin)]
         [HttpDelete("{id}")]
         public ActionResult DeleteCustomer(int id)
         {
@@ -64,7 +65,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();
         }
 
-        //[Authorize]
+        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpGet("{id}/rentals")]
         public ActionResult<IEnumerable<Rental>> GetCustomerRentalHistoryById(int id)
         {
@@ -72,7 +73,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("Index", customerRentals);
         }
 
-        //[Authorize]
+        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpGet("{id}/active-rental")]
         public ActionResult<IEnumerable<Rental>> GetCustomerActiveRentalsById(int id)
         {

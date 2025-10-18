@@ -16,7 +16,7 @@ namespace Midterm_EquipmentRental.Controllers
             _context = context;
         }
 
-        //[Authorize]
+        [Authorize (Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpGet]
         public ActionResult<IEnumerable<Equipment>> GetAllEquipment()
         {
@@ -25,7 +25,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("Index", equipments);
         }
 
-        //[Authorize]
+        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpGet("{id}")]
         public ActionResult<Equipment> GetEquipmentById(int id)
         {
@@ -33,7 +33,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok(equipment);
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRole.Admin)]
         [HttpPost]
         public ActionResult AddEquipment(Equipment equipment)
         {
@@ -43,7 +43,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();            
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRole.Admin)]
         [HttpPut("{id}")]
         public ActionResult UpdateEquipment(int id, Equipment equipment)
         {
@@ -54,8 +54,8 @@ namespace Midterm_EquipmentRental.Controllers
             _context.Complete();
             return Ok();
         }
-        
-        //[Authorize(Roles = "Admin")]
+
+        [Authorize(Roles = UserRole.Admin)]
         [HttpDelete("{id}")]
         public ActionResult DeleteEquipment(int id)
         {
@@ -66,7 +66,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();
         }
 
-        //[Authorize]
+        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpGet("available")]
         public ActionResult<IEnumerable<Equipment>> GetAllAvailableEquipment()
         {
@@ -75,7 +75,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("Index", equipments);
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRole.Admin)]
         [HttpGet("rented")]
         public ActionResult<IEnumerable<Equipment>> GetAllRentedEquipment()
         {

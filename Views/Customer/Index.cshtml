@@ -3,8 +3,8 @@
 @{
     ViewData["Title"] = "Customers";
 
-    string RoleBadge(Midterm_EquipmentRental.Models.UserRole role) =>
-        role.ToString().Equals("Admin", StringComparison.OrdinalIgnoreCase)
+    string RoleBadge(string role) =>
+        role.ToString().Equals(UserRole.Admin, StringComparison.OrdinalIgnoreCase)
             ? "badge rounded-pill bg-danger"
             : "badge rounded-pill bg-primary";
 }

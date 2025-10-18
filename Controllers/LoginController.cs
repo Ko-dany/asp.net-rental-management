@@ -55,13 +55,7 @@ namespace Midterm_EquipmentRental.Controllers
                 var jwtToken = handler.ReadJwtToken(token);
                 var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
 
-                if (!Enum.TryParse<UserRole>(roleClaim, out var role))
-                {
-                    ViewBag.Error = "Invalid role in token";
-                    return View();
-                }
-
-                return role switch
+                return roleClaim switch
                 {
                     UserRole.Admin => RedirectToAction("AdminDashboard"),
                     UserRole.User => RedirectToAction("UserDashboard"),
@@ -87,7 +81,7 @@ namespace Midterm_EquipmentRental.Controllers
             var jwtToken = handler.ReadJwtToken(token);
             var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
 
-            if (!Enum.TryParse<UserRole>(roleClaim, out var role) || role != UserRole.Admin)
+            if (roleClaim != UserRole.Admin)
                 return RedirectToAction("Login");
 
             return View();
@@ -103,7 +97,7 @@ namespace Midterm_EquipmentRental.Controllers
             var jwtToken = handler.ReadJwtToken(token);
             var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
 
-            if (!Enum.TryParse<UserRole>(roleClaim, out var role) || role != UserRole.User)
+            if (roleClaim != UserRole.User)
                 return RedirectToAction("Login");
 
             return View();
