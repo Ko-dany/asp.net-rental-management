@@ -155,7 +155,8 @@ namespace Midterm_EquipmentRental.Data
                     EquipmentId = 1,   // Excavator
                     CustomerId = 1,
                     IssuedAt = new DateTime(2025, 10, 1),
-                    ReturnedAt = new DateTime(2025, 10, 5)
+                    ReturnedAt = new DateTime(2025, 10, 5),
+                    Status = RentalStatus.Returned
                 },
                 new Rental
                 {
@@ -163,7 +164,8 @@ namespace Midterm_EquipmentRental.Data
                     EquipmentId = 3,   // Electric Drill
                     CustomerId = 2,
                     IssuedAt = new DateTime(2025, 9, 28),
-                    ReturnedAt = new DateTime(2025, 10, 2)
+                    ReturnedAt = new DateTime(2025, 10, 2),
+                    Status = RentalStatus.Active
                 },
                 new Rental
                 {
@@ -171,7 +173,8 @@ namespace Midterm_EquipmentRental.Data
                     EquipmentId = 5,   // Pickup Truck
                     CustomerId = 3,
                     IssuedAt = new DateTime(2025, 9, 30),
-                    ReturnedAt = new DateTime(2025, 10, 7)
+                    ReturnedAt = new DateTime(2025, 10, 7),
+                    Status = RentalStatus.Returned
                 },
                 new Rental
                 {
@@ -179,7 +182,8 @@ namespace Midterm_EquipmentRental.Data
                     EquipmentId = 7,   // Safety Helmet
                     CustomerId = 4,
                     IssuedAt = new DateTime(2025, 10, 3),
-                    ReturnedAt = new DateTime(2025, 10, 3)
+                    ReturnedAt = new DateTime(2025, 10, 3),
+                    Status = RentalStatus.Returned
                 },
                 new Rental
                 {
@@ -187,7 +191,8 @@ namespace Midterm_EquipmentRental.Data
                     EquipmentId = 9,   // Total Station
                     CustomerId = 5,
                     IssuedAt = new DateTime(2025, 9, 25),
-                    ReturnedAt = new DateTime(2025, 9, 30)
+                    ReturnedAt = new DateTime(2025, 9, 30),
+                    Status = RentalStatus.Overdue
                 }
             );
         }
