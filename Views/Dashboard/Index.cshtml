@@ -34,7 +34,7 @@
                     <div class="card-text">Total Equipment</div>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <a href="#" class="text-white text-decoration-underline">View All</a>
+                    <a asp-controller="View" asp-action="GetAllEquipment" class="text-white text-decoration-underline">View All</a>
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
                     <div class="card-text">Available</div>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <a href="#" class="text-white text-decoration-underline">View Available</a>
+                    <a asp-controller="View" asp-action="GetAllAvailableEquipment" class="text-white text-decoration-underline">View Available</a>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
                     <div class="card-text">Currently Rented</div>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <a href="#" class="text-white text-decoration-underline">View Rented</a>
+                    <a asp-controller="View" asp-action="GetAllRentedEquipment" class="text-white text-decoration-underline">View Rented</a>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
                 <div class="card-footer bg-transparent border-0">
                     @if (isAdmin)
                     {
-                        <a href="#" class="text-white text-decoration-underline">View Overdue</a>
+                        <a asp-controller="View" asp-action="GetOverdueRentals" class="text-white text-decoration-underline">View Overdue</a>
                     }
                     else
                     {
@@ -92,58 +92,58 @@
                     <div class="card-text">Total Customers</div>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <a href="#" class="text-white text-decoration-underline">View All</a>
+                    <a asp-controller="View" asp-action="GetAllCustomers" class="text-white text-decoration-underline">View All</a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Bottom row: Quick Actions + System Status -->
-    <div class="row g-4">
-        <!-- Quick Actions -->
-        <div class="col-lg-7">
-            <div class="card h-100">
-                <div class="card-header fw-bold">Quick Actions</div>
-                <div class="card-body">
-                    <div class="d-grid gap-3">
-                        <a href="#" class="btn btn-primary btn-lg">Issue Equipment</a>
-                        <a href="#" class="btn btn-success btn-lg">Return Equipment</a>
+    @* <div class="row g-4"> *@
+    @*     <!-- Quick Actions --> *@
+    @*     <div class="col-lg-7"> *@
+    @*         <div class="card h-100"> *@
+    @*             <div class="card-header fw-bold">Quick Actions</div> *@
+    @*             <div class="card-body"> *@
+    @*                 <div class="d-grid gap-3"> *@
+    @*                     <a href="#" class="btn btn-primary btn-lg">Issue Equipment</a> *@
+    @*                     <a href="#" class="btn btn-success btn-lg">Return Equipment</a> *@
 
-                        @if (isAdmin)
-                        {
-                            <a href="#" class="btn btn-info btn-lg">View All Rentals</a>
-                            <a href="#" class="btn btn-secondary btn-lg">Add Equipment</a>
-                            <a href="#" class="btn btn-secondary btn-lg">Add Customer</a>
-                            <a href="#" class="btn btn-danger btn-lg">View Overdue Rentals</a>
-                        }
-                        else
-                        {
-                            <a href="#" class="btn btn-info btn-lg">View My Rentals</a>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
+    @*                     @if (isAdmin) *@
+    @*                     { *@
+    @*                         <a href="#" class="btn btn-info btn-lg">View All Rentals</a> *@
+    @*                         <a href="#" class="btn btn-secondary btn-lg">Add Equipment</a> *@
+    @*                         <a href="#" class="btn btn-secondary btn-lg">Add Customer</a> *@
+    @*                         <a href="#" class="btn btn-danger btn-lg">View Overdue Rentals</a> *@
+    @*                     } *@
+    @*                     else *@
+    @*                     { *@
+    @*                         <a href="#" class="btn btn-info btn-lg">View My Rentals</a> *@
+    @*                     } *@
+    @*                 </div> *@
+    @*             </div> *@
+    @*         </div> *@
+    @*     </div> *@
 
-        <!-- System Status -->
-        <div class="col-lg-5">
-            <div class="card h-100">
-                <div class="card-header fw-bold">System Status</div>
-                <div class="card-body">
-                    <p class="mb-2"><strong>Active Rentals:</strong> @activeRentals</p>
-                    <p class="mb-2">
-                        <strong>Overdue Rentals:</strong>
-                        <span class="@(overdueRentals > 0 ? "text-danger" : "text-success")">@overdueRentals</span>
-                    </p>
-                    <p class="mb-2"><strong>Logged in as:</strong> @userName (@roleName)</p>
-                    <p class="mb-0">
-                        <strong>System Status:</strong>
-                        <span class="@(sysStatus.Equals("Online", StringComparison.OrdinalIgnoreCase) ? "text-success" : "text-danger")">
-                            @sysStatus
-                        </span>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+    @*     <!-- System Status --> *@
+    @*     <div class="col-lg-5"> *@
+    @*         <div class="card h-100"> *@
+    @*             <div class="card-header fw-bold">System Status</div> *@
+    @*             <div class="card-body"> *@
+    @*                 <p class="mb-2"><strong>Active Rentals:</strong> @activeRentals</p> *@
+    @*                 <p class="mb-2"> *@
+    @*                     <strong>Overdue Rentals:</strong> *@
+    @*                     <span class="@(overdueRentals > 0 ? "text-danger" : "text-success")">@overdueRentals</span> *@
+    @*                 </p> *@
+    @*                 <p class="mb-2"><strong>Logged in as:</strong> @userName (@roleName)</p> *@
+    @*                 <p class="mb-0"> *@
+    @*                     <strong>System Status:</strong> *@
+    @*                     <span class="@(sysStatus.Equals("Online", StringComparison.OrdinalIgnoreCase) ? "text-success" : "text-danger")"> *@
+    @*                         @sysStatus *@
+    @*                     </span> *@
+    @*                 </p> *@
+    @*             </div> *@
+    @*         </div> *@
+    @*     </div> *@
+    @* </div> *@
 </div>
