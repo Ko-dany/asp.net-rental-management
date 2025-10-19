@@ -6,6 +6,7 @@ namespace Midterm_EquipmentRental.Repositories
     {
         IEnumerable<Rental> GetAllRentals();
         public Rental GetRentalById(int id);
+        public IEnumerable<Rental> GetRentalsByCustomerId(int id);
         public void IssueEquipment(Rental rental);
         public void ReturnEquipment(Rental rental);
         public IEnumerable<Rental> GetActiveRentals();

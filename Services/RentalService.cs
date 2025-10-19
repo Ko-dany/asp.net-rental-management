@@ -14,6 +14,12 @@ namespace Midterm_EquipmentRental.Services
         {
             return _context.Rentals.GetAllRentals();
         }
+        public IEnumerable<Rental> GetRentalsByCustomerId(int id)
+        {
+            return _context.Rentals.GetRentalsByCustomerId(id);
+        }
+
+
         public Rental GetRentalById(int id)
         {
             return _context.Rentals.GetRentalById(id);

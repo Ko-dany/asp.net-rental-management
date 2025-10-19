@@ -64,6 +64,7 @@ namespace Midterm_EquipmentRental.Controllers
             var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
 
             HttpContext.Session.SetString("role", roleClaim);
+            HttpContext.Session.SetString("userId", user.Id.ToString());
             HttpContext.Session.SetString("username", loginRequest.Username);
             HttpContext.Session.SetString("JwtToken", token);
 
@@ -81,6 +82,7 @@ namespace Midterm_EquipmentRental.Controllers
         public IActionResult GoToDashboard()
         {
             var role = HttpContext.Session.GetString("role");
+            var currentUserId = HttpContext.Session.GetString("userId");
             if (string.IsNullOrEmpty(role)) return RedirectToAction("Login");
 
             if (role == UserRole.Admin || role == UserRole.User)
@@ -90,6 +92,7 @@ namespace Midterm_EquipmentRental.Controllers
                 dashboardViewModel.RoleName = role;
                 dashboardViewModel.IsAdmin = role == UserRole.Admin;
                 dashboardViewModel.SystemStatus = "Online";
+                dashboardViewModel.CurrentUserId = currentUserId;
 
                 return View("~/Views/Dashboard/Index.cshtml", dashboardViewModel);
             }
@@ -210,16 +213,32 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpGet]
         public IActionResult GetEquipmentDetails(int id)
         {
+            var role = HttpContext.Session.GetString("role");
+            ViewBag.UserRole = role;
+
             var equipment = _equipmentService.GetEquipmentById(id);
             return View("~/Views/Equipment/Details.cshtml", equipment);
         }
 
         /* Rentals view */
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpGet]
         public ActionResult<IEnumerable<Rental>> GetAllRentals()
         {
-            var rentals = _rentalService.GetAllRentals();
+            IEnumerable<Rental> rentals;
+            var role = HttpContext.Session.GetString("role");
+            ViewBag.UserRole = role;
+
+            if (role == UserRole.Admin)
+            {
+                rentals = _rentalService.GetAllRentals();
+            }
+            else
+            {
+                var currentUserId = HttpContext.Session.GetString("userId");
+                var userIdValue = Int32.Parse(currentUserId);
+                rentals = _rentalService.GetRentalsByCustomerId(userIdValue);
+            }
             return View("~/Views/Rentals/Index.cshtml", rentals);
         }
 
@@ -227,6 +246,9 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Rental>> GetActiveRentals()
         {
+            var role = HttpContext.Session.GetString("role");
+            ViewBag.UserRole = role;
+
             var rentals = _rentalService.GetActiveRentals();
             return View("~/Views/Rentals/Index.cshtml", rentals);
         }
@@ -235,6 +257,9 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Rental>> GetCompletedRentals()
         {
+            var role = HttpContext.Session.GetString("role");
+            ViewBag.UserRole = role;
+
             var rentals = _rentalService.GetCompletedRentals();
             return View("~/Views/Rentals/Index.cshtml", rentals);
         }
@@ -243,6 +268,9 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Rental>> GetOverdueRentals()
         {
+            var role = HttpContext.Session.GetString("role");
+            ViewBag.UserRole = role;
+
             var rentals = _rentalService.GetOverdueRentals();
             return View("~/Views/Rentals/Index.cshtml", rentals);
         }
@@ -360,11 +388,25 @@ namespace Midterm_EquipmentRental.Controllers
         }
 
         /* Customers view */
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
         [HttpGet]
         public ActionResult<IEnumerable<Customer>> GetAllCustomers()
         {
-            var customers = _customerService.GetAllCustomers();
+            IEnumerable<Customer> customers;
+            var role = HttpContext.Session.GetString("role");
+            ViewBag.UserRole = role;
+
+            if (role == UserRole.Admin)
+            {
+                customers = _customerService.GetAllCustomers();
+            }
+            else
+            {
+                var currentUserId = HttpContext.Session.GetString("userId");
+                var userIdValue = Int32.Parse(currentUserId);
+                var customer = _customerService.GetCustomerById(userIdValue);
+                return View("~/Views/Customers/Index.cshtml", new List<Customer> { customer });
+            }
             return View("~/Views/Customers/Index.cshtml", customers);
         }
 
@@ -391,6 +433,9 @@ namespace Midterm_EquipmentRental.Controllers
         [HttpGet]
         public IActionResult GetCustomerDetails(int id)
         {
+            var role = HttpContext.Session.GetString("role");
+            ViewBag.UserRole = role;
+
             var customer = _customerService.GetCustomerById(id);
             customer.RentalHistory = _rentalService.GetAllRentals().Where(r => r.CustomerId == customer.Id).ToList();
             return View("~/Views/Customers/Details.cshtml", customer);

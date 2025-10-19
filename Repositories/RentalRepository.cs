@@ -1,4 +1,5 @@
-﻿using Midterm_EquipmentRental.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Midterm_EquipmentRental.Data;
 using Midterm_EquipmentRental.Models;
 
 namespace Midterm_EquipmentRental.Repositories
@@ -13,6 +14,12 @@ namespace Midterm_EquipmentRental.Repositories
         }
 
         public IEnumerable<Rental> GetAllRentals() { return _context.Rentals.ToList(); }
+
+        public IEnumerable<Rental> GetRentalsByCustomerId(int customerId)
+        {
+            return _context.Rentals
+                .Where(r => r.CustomerId == customerId).ToList();
+        }
 
         public Rental GetRentalById(int id) { return _context.Rentals.Find(id); }
 

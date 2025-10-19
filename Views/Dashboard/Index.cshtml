@@ -80,7 +80,7 @@
                     }
                     else
                     {
-                        <span class="text-white-50">View your rentals</span> // View rentals by customer ID
+                        <a asp-controller="View" asp-action="GetAllRentals"  class="text-white-50">View your rentals</a>
                     }
                 </div>
             </div>
@@ -88,21 +88,24 @@
     </div>
 
     <!-- Optional second card (matches your admin screenshot) -->
-    @if (isAdmin){
-        <div class="row g-4 mb-4">
-            <div class="col-md-3">
-                <div class="card text-white bg-info h-100 shadow-sm">
-                    <div class="card-body">
-                        <h3 class="card-title mb-1">@totalCustomers</h3>
-                        <div class="card-text">Total Customers</div>
-                    </div>
-                    <div class="card-footer bg-transparent border-0">
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-info h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-1">@totalCustomers</h3>
+                    <div class="card-text">Total Customers</div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    @if(isAdmin){
                         <a asp-controller="View" asp-action="GetAllCustomers" class="text-white text-decoration-underline">View All</a>
-                    </div>
+                    }else{
+                        <a asp-controller="View" asp-action="GetAllCustomers" class="text-white text-decoration-underline">View All</a>
+                    }
                 </div>
             </div>
         </div>
-    }
+    </div>
+
 
     <!-- Bottom row: Quick Actions + System Status -->
     @* <div class="row g-4"> *@

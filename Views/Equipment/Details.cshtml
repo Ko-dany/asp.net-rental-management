@@ -32,11 +32,13 @@
                 <div class="mb-3"><strong>Description:</strong><br />@Model.Description</div>
             }
 
-            <a asp-controller="View" asp-action="UpdateEquipment" asp-route-id="@Model.Id" class="btn btn-primary me-2">Edit</a>
-            <form asp-controller="View" asp-action="DeleteEquipment" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this equipment?');">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
+            @if (ViewBag.UserRole == UserRole.Admin){
+                <a asp-controller="View" asp-action="UpdateEquipment" asp-route-id="@Model.Id" class="btn btn-primary me-2">Edit</a>
+                <form asp-controller="View" asp-action="DeleteEquipment" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this equipment?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            }
         </div>
     </div>
 

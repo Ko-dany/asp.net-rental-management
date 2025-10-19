@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<Midterm_EquipmentRental.Models.Customer>
-
 @{
     ViewData["Title"] = "Customers";
 
@@ -14,7 +13,9 @@
     <!-- Header + Add button -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Customers</h2>
-        <a asp-controller="View" asp-action="AddCustomer" class="btn btn-primary">Add New Customer</a>
+        @if(ViewBag.UserRole == UserRole.Admin){
+            <a asp-controller="View" asp-action="AddCustomer" class="btn btn-primary">Add New Customer</a>
+        }
     </div>
 
     <!-- Table -->
@@ -44,6 +45,7 @@
                                 <a asp-controller="View" asp-action="GetCustomerDetails" asp-route-id="@c.Id"
                                    class="btn btn-sm btn-outline-info me-2">Details</a>
 
+                                @if(ViewBag.UserRole == UserRole.Admin){
                                 <a asp-controller="View" asp-action="UpdateCustomer" asp-route-id="@c.Id"
                                    class="btn btn-sm btn-outline-primary me-2">Edit</a>
 
@@ -53,6 +55,7 @@
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                                 </form>
+                                }
                             </div> 
                         </td>
                     </tr>

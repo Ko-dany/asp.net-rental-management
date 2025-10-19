@@ -17,7 +17,7 @@
         public string UserName { get; set; } = "";
         public string RoleName { get; set; } = "User";
         public bool IsAdmin { get; set; } = false;
-
+        public string CurrentUserId { get; set; }
         public string SystemStatus { get; set; } = "Online"; // Online/Degraded/Offline
     }
 }

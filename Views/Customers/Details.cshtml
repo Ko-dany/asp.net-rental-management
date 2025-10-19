@@ -27,13 +27,15 @@
                 <span class="@RoleBadgeClass(Model.Role)">@Model.Role</span>
             </div>
 
-            <a asp-controller="View" asp-action="UpdateCustomer" asp-route-id="@Model.Id" class="btn btn-primary me-2">Edit</a>
-            <form asp-controller="View" asp-action="DeleteCustomer" asp-route-id="@Model.Id"
-                  method="post" class="d-inline"
-                  onsubmit="return confirm('Delete this customer?');">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-            </form>
+            @if(ViewBag.UserRole == UserRole.Admin){
+                <a asp-controller="View" asp-action="UpdateCustomer" asp-route-id="@Model.Id" class="btn btn-primary me-2">Edit</a>
+                <form asp-controller="View" asp-action="DeleteCustomer" asp-route-id="@Model.Id"
+                      method="post" class="d-inline"
+                      onsubmit="return confirm('Delete this customer?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            }
         </div>
     </div>
 
