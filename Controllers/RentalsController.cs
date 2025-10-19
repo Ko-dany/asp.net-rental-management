@@ -85,9 +85,9 @@ namespace Midterm_EquipmentRental.Controllers
 
         [Authorize(Roles = UserRole.Admin)]
         [HttpPut]
-        public ActionResult ExtendRentalById(int id)
+        public ActionResult ExtendRentalById(int id, DateTime newDate)
         {
-            _context.ExtendRentalById(id);
+            _context.ExtendRentalById(id, newDate);
             return Ok();
         }
 

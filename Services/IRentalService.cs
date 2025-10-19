@@ -12,7 +12,7 @@ namespace Midterm_EquipmentRental.Services
         IEnumerable<Rental> GetCompletedRentals();
         IEnumerable<Rental> GetOverdueRentals();
         IEnumerable<Rental> GetRentalHistoryByEquipmentId(int id);
-        void ExtendRentalById(int id);
+        void ExtendRentalById(int id, DateTime newDate);
         void CancelRentalById(int id);
     }
 }

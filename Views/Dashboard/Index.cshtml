@@ -10,6 +10,7 @@
     int rentedCount = Model?.RentedCount ?? 0;
     int overdueCount = Model?.OverdueCount ?? 0;
     int totalCustomers = Model?.TotalCustomers ?? 0;
+    int rentalsCount = Model?.RentalsCount ?? 0;
 
     int activeRentals = Model?.ActiveRentals ?? 0;
     int overdueRentals = Model?.OverdueRentals ?? 0;
@@ -69,17 +70,17 @@
         <div class="col-md-3">
             <div class="card text-white bg-danger h-100 shadow-sm">
                 <div class="card-body">
-                    <h3 class="card-title mb-1">@overdueCount</h3>
-                    <div class="card-text">Overdue Rentals</div>
+                    <h3 class="card-title mb-1">@rentalsCount</h3>
+                    <div class="card-text">All Rentals</div>
                 </div>
                 <div class="card-footer bg-transparent border-0">
                     @if (isAdmin)
                     {
-                        <a asp-controller="View" asp-action="GetOverdueRentals" class="text-white text-decoration-underline">View Overdue</a>
+                        <a asp-controller="View" asp-action="GetAllRentals" class="text-white text-decoration-underline">View All Rentals</a>
                     }
                     else
                     {
-                        <span class="text-white-50">Admin Access Required</span>
+                        <span class="text-white-50">View your rentals</span> // View rentals by customer ID
                     }
                 </div>
             </div>

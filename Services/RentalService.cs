@@ -44,9 +44,9 @@ namespace Midterm_EquipmentRental.Services
         {
             return _context.Rentals.GetRentalHistoryByEquipmentId(id);
         }
-        public void ExtendRentalById(int id)
+        public void ExtendRentalById(int id, DateTime newDate)
         {
-            _context.Rentals.ExtendRentalById(id);
+            _context.Rentals.ExtendRentalById(id, newDate);
             _context.Complete();
         }
         public void CancelRentalById(int id)

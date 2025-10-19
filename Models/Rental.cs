@@ -6,7 +6,7 @@
         public int EquipmentId { get; set; }
         public int CustomerId { get; set; }
         public DateTime IssuedAt { get; set; }
-        public DateTime ReturnedAt { get; set; }
+        public DateTime? ReturnedAt { get; set; }
         public RentalStatus Status { get; set; }
     }
 }

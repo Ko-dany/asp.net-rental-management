@@ -11,6 +11,7 @@
 
         // System Status panel
         public int ActiveRentals { get; set; }
+        public int RentalsCount { get; set; }
         public int OverdueRentals { get; set; }
 
         public string UserName { get; set; } = "";

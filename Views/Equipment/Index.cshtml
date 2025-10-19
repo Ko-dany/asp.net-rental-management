@@ -67,10 +67,7 @@
                     <th>Condition</th>
                     <th>Status</th>
                     <th>Created At</th>
-                    @if (isAdmin)
-                    {
-                        <th class="text-end" style="width:10rem;">Actions</th>
-                    }
+                    <th class="text-end" style="width:10rem;">Actions</th>          
                 </tr>
             </thead>
             <tbody>
@@ -89,11 +86,18 @@
                         @if (isAdmin)
                         {
                             <td class="text-end">
+                                <a asp-controller="View" asp-action="GetEquipmentDetails" asp-route-id="@e.Id" class="btn btn-sm btn-outline-primary me-2">Details</a>
                                 <a asp-controller="View" asp-action="UpdateEquipment" asp-route-id="@e.Id" class="btn btn-sm btn-outline-primary me-2">Edit</a>
                                 <form asp-controller="View" asp-action="DeleteEquipment" asp-route-id="@e.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this equipment?');">
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                                 </form>
+                            </td>
+                        } 
+                        else
+                        {
+                            <td class="text-end">
+                                <a asp-controller="View" asp-action="GetEquipmentDetails" asp-route-id="@e.Id" class="btn btn-sm btn-outline-primary me-2">Details</a>
                             </td>
                         }
                     </tr>

@@ -1,91 +1,99 @@
 ﻿@model IEnumerable<Midterm_EquipmentRental.Models.Rental>
-@using System.Globalization
+@using Midterm_EquipmentRental.Models
 
 @{
-    ViewData["Title"] = "Overdue Rentals";
+    ViewData["Title"] = "All Rentals";
 
-    // Optional maps provided by controller; will fall back to IDs if absent.
-    var eqNames = ViewBag.EquipmentNames as IDictionary<int, string> ?? new Dictionary<int, string>();
-    var custNames = ViewBag.CustomerNames as IDictionary<int, string> ?? new Dictionary<int, string>();
+    // Filtering: expected filter name passed from controller or ViewBag
+    string current = (ViewBag.Filter ?? "All").ToString();
 
-    // Consider rentals overdue if kept more than this many days
-    const int graceDays = 7;
+    IEnumerable<Rental> items =
+        current.Equals("Active", StringComparison.OrdinalIgnoreCase) ? Model.Where(r => r.Status == RentalStatus.Active) :
+        current.Equals("Completed", StringComparison.OrdinalIgnoreCase) ? Model.Where(r => r.Status == RentalStatus.Returned) :
+        current.Equals("Overdue", StringComparison.OrdinalIgnoreCase) ? Model.Where(r => r.Status == RentalStatus.Overdue) :
+                                                                           Model;
 
-    int DaysOverdue(DateTime issuedAt)
+    string TabClass(string key) =>
+        key == "All" ? (current == "All" ? "btn btn-outline-primary" : "btn btn-outline-primary") :
+        key == "Active" ? (current == "Active" ? "btn btn-warning text-dark" : "btn btn-outline-warning") :
+        key == "Completed" ? (current == "Completed" ? "btn btn-success" : "btn btn-outline-success") :
+        key == "Overdue" ? (current == "Overdue" ? "btn btn-danger" : "btn btn-outline-danger") :
+                              "btn btn-outline-secondary";
+
+    string StatusBadge(RentalStatus status) =>
+        status == RentalStatus.Overdue ? "badge rounded-pill bg-danger" :
+        status == RentalStatus.Returned ? "badge rounded-pill bg-success" :
+                                          "badge rounded-pill bg-warning text-dark";
+
+    string StatusText(RentalStatus status) =>
+        status == RentalStatus.Returned ? "Completed" :
+        status == RentalStatus.Active ? "Active" : "Overdue";
+
+    string DaysBadge(int days) =>
+        days > 0 ? "badge rounded-pill bg-danger" : "badge rounded-pill bg-secondary";
+
+    string DaysText(int days) => days > 0 ? $"{days} days" : "-";
+
+    // Example calculation for overdue days (you can adjust logic later)
+    int GetDaysOverdue(Rental r)
     {
-        var d = (int)Math.Floor((DateTime.Now - issuedAt).TotalDays) - graceDays;
-        return d < 0 ? 0 : d;
+        if (r.Status != RentalStatus.Overdue) return 0;
+        var days = (DateTime.Now - r.IssuedAt).Days - 7; // sample threshold
+        return days > 0 ? days : 0;
     }
-
-    string StatusBadge(Midterm_EquipmentRental.Models.RentalStatus status)
-        => "badge rounded-pill bg-danger"; // all shown here are Overdue (red)
-
-    string DaysBadgeClass(int days)
-        => "badge rounded-pill bg-danger";
-
-    var overdues = Model?.ToList() ?? new List<Midterm_EquipmentRental.Models.Rental>();
-    var count = overdues.Count;
-
-    // Stats
-    var daysList = overdues.Select(r => DaysOverdue(r.IssuedAt)).Where(d => d > 0).ToList();
-    double avgDays = daysList.Count > 0 ? daysList.Average() : 0;
-    int maxDays = daysList.Count > 0 ? daysList.Max() : 0;
-
-    string FormatDate(DateTime dt) => dt.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
 }
 
 <div class="container mt-4">
-
-    <!-- Header row -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h2 class="mb-0">Overdue Rentals</h2>
-            <p class="text-muted mb-0">Equipment rented for more than @graceDays days</p>
-        </div>
-        <a asp-controller="Rentals" asp-action="Index" class="btn btn-secondary">Back to All Rentals</a>
+        <h2 class="mb-0">Rentals</h2>
     </div>
 
-    <!-- Alert -->
-    <div class="alert alert-warning border rounded-3" role="alert">
-        <div class="fw-semibold">@count Overdue Rental(s) Found</div>
-        <div class="small">The following rentals are overdue and require immediate attention.</div>
+    <!-- Filter tabs -->
+    <div class="btn-group mb-3" role="group" aria-label="Rental Filters">
+        <a asp-controller="View" asp-action="GetAllRentals" class="@TabClass("All")">All</a>
+        <a asp-controller="View" asp-action="GetActiveRentals" class="@TabClass("Active")">Active</a>
+        <a asp-controller="View" asp-action="GetCompletedRentals" class="@TabClass("Completed")">Completed</a>
+        <a asp-controller="View" asp-action="GetOverdueRentals" class="@TabClass("Overdue")">Overdue</a>
     </div>
 
     <!-- Table -->
-    <div class="table-responsive mb-4">
-        <table class="table table-hover align-middle">
-            <thead style="background:#f5d5d7;" class="fw-semibold">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
                 <tr>
-                    <th>Rental ID</th>
-                    <th>Equipment</th>
-                    <th>Customer</th>
+                    <th style="width:7rem;">Rental ID</th>
+                    <th>Equipment ID</th>
+                    <th>Customer ID</th>
                     <th>Issued At</th>
-                    <th>Days Overdue</th>
-                    <th>Status</th>
-                    <th class="text-end">Actions</th>
+                    <th>Returned At</th>
+                    <th style="width:9rem;">Days Overdue</th>
+                    <th style="width:8rem;">Status</th>
+                    <th class="text-end" style="width:14rem;">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var r in overdues)
+                @foreach (var r in items)
                 {
-                    var days = DaysOverdue(r.IssuedAt);
+                    var daysOverdue = GetDaysOverdue(r);
                     <tr>
                         <td>@r.Id</td>
-                        <td>@(eqNames.TryGetValue(r.EquipmentId, out var en) ? en : $"#@r.EquipmentId")</td>
-                        <td>@(custNames.TryGetValue(r.CustomerId, out var cn) ? cn : $"#@r.CustomerId")</td>
-                        <td>@FormatDate(r.IssuedAt)</td>
-                        <td>
-                            <span class="@DaysBadgeClass(days)">@days days</span>
-                        </td>
-                        <td>
-                            <span class="@StatusBadge(r.Status)">Overdue</span>
-                        </td>
+                        <td>@r.EquipmentId</td>
+                        <td>@r.CustomerId</td>
+                        <td>@r.IssuedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@(r.ReturnedAt == default ? "-" : r.ReturnedAt?.ToString("yyyy-MM-dd HH:mm"))</td>
+                        <td><span class="@DaysBadge(daysOverdue)">@DaysText(daysOverdue)</span></td>
+                        <td><span class="@StatusBadge(r.Status)">@StatusText(r.Status)</span></td>
                         <td class="text-end">
-                            <a asp-controller="Rentals" asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-info me-2">Details</a>
-                            <a asp-controller="Rentals" asp-action="Extend" asp-route-id="@r.Id" class="btn btn-sm btn-outline-warning me-2">Extend</a>
-                            <form asp-controller="Rentals" asp-action="ForceReturn" asp-route-id="@r.Id" method="post" class="d-inline"
-                                  onsubmit="return confirm('Force return this rental?');">
-                                @Html.AntiForgeryToken()
+                            <a asp-controller="View" asp-action="GetRentalDetails" asp-route-id="@r.Id" class="btn btn-sm btn-outline-info me-2">Details</a>
+                            <a asp-controller="View" asp-action="GetExtendRental" asp-route-id="@r.Id" class="btn btn-sm btn-outline-warning me-2">Extend</a>
+                            <form asp-controller="View" asp-action="ReturnRental" method="post" class="d-inline">
+                                <input type="hidden" name="Id" value="@r.Id" />
+                                <input type="hidden" name="EquipmentId" value="@r.EquipmentId" />
+                                <input type="hidden" name="CustomerId" value="@r.CustomerId" />
+                                <input type="hidden" name="IssuedAt" value="@r.IssuedAt.ToString("o")" />
+                                <input type="hidden" name="ReturnedAt" value="@r.ReturnedAt?.ToString("o")" />
+                                <input type="hidden" name="Status" value="@r.Status" />
+
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Force Return</button>
                             </form>
                         </td>
@@ -93,32 +101,5 @@
                 }
             </tbody>
         </table>
-    </div>
-
-    <!-- Bottom panels -->
-    <div class="row g-4">
-        <div class="col-lg-6">
-            <div class="card border-warning">
-                <div class="card-header fw-semibold" style="background:#ffc107;">Management Actions</div>
-                <div class="card-body">
-                    <p class="mb-2">For overdue rentals, you can:</p>
-                    <ul class="mb-0">
-                        <li><strong>Extend:</strong> Give the customer more time</li>
-                        <li><strong>Force Return:</strong> Immediately return the equipment</li>
-                        <li><strong>Contact Customer:</strong> Follow up on the rental</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="card border-info">
-                <div class="card-header fw-semibold text-white" style="background:#0dcaf0;">Statistics</div>
-                <div class="card-body">
-                    <p class="mb-2"><strong>Total Overdue:</strong> @count</p>
-                    <p class="mb-2"><strong>Average Days Overdue:</strong> @avgDays.ToString("0.0")</p>
-                    <p class="mb-0"><strong>Longest Overdue:</strong> @maxDays days</p>
-                </div>
-            </div>
-        </div>
     </div>
 </div>

@@ -146,8 +146,53 @@ namespace Midterm_EquipmentRental.Data
                         UserName = "Gabe",
                         Password = "Gabepassword",
                         Role = UserRole.User
+                    },
+                    new Customer
+                    {
+                        Id = 3,
+                        Name = "Nishant Gupta",
+                        Email = "NGupta@conestogac.on.ca",
+                        UserName = "Nishant",
+                        Password = "Nishantpassword",
+                        Role = UserRole.User
+                    },
+                    new Customer
+                    {
+                        Id = 4,
+                        Name = "Leonardo DiCaprio",
+                        Email = "LdiCaprio@conestogac.on.ca",
+                        UserName = "Leo",
+                        Password = "Leopassowrd",
+                        Role = UserRole.User
+                    },
+                    new Customer
+                    {
+                        Id = 5,
+                        Name = "Christian Bale",
+                        Email = "Cbale@conestogac.on.ca",
+                        UserName = "Chris",
+                        Password = "Chrispassword",
+                        Role = UserRole.User
+                    },
+                    new Customer
+                    {
+                        Id = 6,
+                        Name = "Robert Pattinson",
+                        Email = "Rpattinson@conestogac.on.ca",
+                        UserName = "Robert",
+                        Password = "Robertpassword",
+                        Role = UserRole.User
+                    },
+                    new Customer
+                    {
+                        Id = 7,
+                        Name = "Harry Melling",
+                        Email = "Hmelling@conestogac.on.ca",
+                        UserName = "Harry",
+                        Password = "Harrypassword",
+                        Role = UserRole.User
                     }
-                );
+             );
             modelBuilder.Entity<Rental>().HasData(
                 new Rental
                 {
@@ -155,8 +200,8 @@ namespace Midterm_EquipmentRental.Data
                     EquipmentId = 1,   // Excavator
                     CustomerId = 1,
                     IssuedAt = new DateTime(2025, 10, 1),
-                    ReturnedAt = new DateTime(2025, 10, 5),
-                    Status = RentalStatus.Returned
+                    ReturnedAt = new DateTime(2025, 10, 24),
+                    Status = RentalStatus.Active
                 },
                 new Rental
                 {
@@ -173,8 +218,8 @@ namespace Midterm_EquipmentRental.Data
                     EquipmentId = 5,   // Pickup Truck
                     CustomerId = 3,
                     IssuedAt = new DateTime(2025, 9, 30),
-                    ReturnedAt = new DateTime(2025, 10, 7),
-                    Status = RentalStatus.Returned
+                    ReturnedAt = new DateTime(2025, 10, 4),
+                    Status = RentalStatus.Overdue
                 },
                 new Rental
                 {

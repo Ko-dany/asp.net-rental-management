@@ -7,4 +7,44 @@
 
 <div class="container mt-4">
     <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    <form method="post" asp-controller="View" asp-action="UpdateCustomer" asp-route-id="@Model.Id" class="needs-validation" novalidate>
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <!-- ID (read-only) -->
+        <div class="mb-3">
+            <label class="form-label">ID</label>
+            <input class="form-control" value="@Model.Id" readonly disabled />
+            <!-- disabled inputs don't post; include hidden so ID is submitted -->
+            <input type="hidden" asp-for="Id" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Full Name</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="UserName" class="form-label">Username</label>
+            <input asp-for="UserName" class="form-control" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Password</label>
+            <input asp-for="Password" class="form-control" placeholder="Leave blank to keep current password" />
+            <div class="form-text">Leave blank to keep the current password</div>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Role" class="form-label">Role</label>
+            <input asp-for="Role" class="form-control" />
+            <span asp-validation-for="Role" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+        <a asp-controller="View" asp-action="GetAllCustomers" class="btn btn-secondary">Cancel</a>
+    </form>
 </div>

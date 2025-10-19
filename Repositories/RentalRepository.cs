@@ -22,10 +22,8 @@ namespace Midterm_EquipmentRental.Repositories
         {
             Rental existingRental = GetRentalById(rental.Id);
             existingRental.EquipmentId = rental.Id;
-            existingRental.CustomerId = rental.CustomerId;
-            existingRental.IssuedAt = rental.IssuedAt;
-            existingRental.ReturnedAt = rental.ReturnedAt;
-            existingRental.Status = rental.Status;
+            existingRental.ReturnedAt = DateTime.Now;
+            existingRental.Status = RentalStatus.Returned;
         }
 
         public IEnumerable<Rental> GetActiveRentals()
@@ -48,10 +46,11 @@ namespace Midterm_EquipmentRental.Repositories
             return _context.Rentals.Where(r => r.EquipmentId == id);
         }
 
-        public void ExtendRentalById(int id)
+        public void ExtendRentalById(int id, DateTime newDate)
         {
             Rental rentalToExtend = GetRentalById(id);
-            rentalToExtend.ReturnedAt.AddDays(5);
+            rentalToExtend.ReturnedAt = newDate;
+            rentalToExtend.Status = RentalStatus.Active;
         }
 
         public void CancelRentalById(int id)

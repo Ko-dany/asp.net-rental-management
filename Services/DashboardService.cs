@@ -17,7 +17,7 @@ namespace Midterm_EquipmentRental.Services
                 TotalEquipment = _context.Equipments.GetAllEquipment().Count(),
                 AvailableCount = _context.Equipments.GetAllAvailableEquipment().Count(),
                 RentedCount = _context.Equipments.GetAllRentedEquipment().Count(),
-                OverdueCount = 0,
+                RentalsCount = _context.Rentals.GetAllRentals().Count(),
                 TotalCustomers = _context.Customers.GetAllCustomers().Count(),
                 ActiveRentals = _context.Rentals.GetActiveRentals().Count(),
                 OverdueRentals = _context.Rentals.GetOverdueRentals().Count(),

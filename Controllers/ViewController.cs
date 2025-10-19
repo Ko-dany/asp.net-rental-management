@@ -206,13 +206,132 @@ namespace Midterm_EquipmentRental.Controllers
             return RedirectToAction("GetAllEquipment");
         }
 
+        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [HttpGet]
+        public IActionResult GetEquipmentDetails(int id)
+        {
+            var equipment = _equipmentService.GetEquipmentById(id);
+            return View("~/Views/Equipment/Details.cshtml", equipment);
+        }
+
         /* Rentals view */
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpGet]
+        public ActionResult<IEnumerable<Rental>> GetAllRentals()
+        {
+            var rentals = _rentalService.GetAllRentals();
+            return View("~/Views/Rentals/Index.cshtml", rentals);
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpGet]
+        public ActionResult<IEnumerable<Rental>> GetActiveRentals()
+        {
+            var rentals = _rentalService.GetActiveRentals();
+            return View("~/Views/Rentals/Index.cshtml", rentals);
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpGet]
+        public ActionResult<IEnumerable<Rental>> GetCompletedRentals()
+        {
+            var rentals = _rentalService.GetCompletedRentals();
+            return View("~/Views/Rentals/Index.cshtml", rentals);
+        }
+
         [Authorize(Roles = UserRole.Admin)]
         [HttpGet]
         public ActionResult<IEnumerable<Rental>> GetOverdueRentals()
         {
             var rentals = _rentalService.GetOverdueRentals();
-            return Content("TODO - rental index");
+            return View("~/Views/Rentals/Index.cshtml", rentals);
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpGet]
+        public IActionResult GetRentalDetails(int id)
+        {
+            var rental = _rentalService.GetRentalById(id);
+            if(rental == null)
+            {
+                return NotFound();
+            }
+            var customer = _customerService.GetCustomerById(rental.CustomerId);
+            var equipment = _equipmentService.GetEquipmentById(rental.EquipmentId);
+
+            string customerName = string.IsNullOrWhiteSpace(customer?.Name)
+                ? "Customer name is missing"
+                : customer.Name;
+
+            string customerUsername = string.IsNullOrWhiteSpace(customer?.UserName)
+                ? "Customer username is missing"
+                : customer.UserName;
+
+            string equipmentName = string.IsNullOrWhiteSpace(equipment?.Name)
+                ? "Equipment name is missing"
+                : equipment.Name;
+            RentalDetailsViewModel rentalDetails = new RentalDetailsViewModel()
+            {
+                Rental = rental,
+                CustomerName = customerName,
+                CustomerUserName = customerUsername,
+                EquipmentName = equipmentName
+            };
+            return View("~/Views/Rentals/Details.cshtml", rentalDetails);
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpGet]
+        public IActionResult GetExtendRental(int id)
+        {
+            var rental = _rentalService.GetRentalById(id);
+            if (rental == null)
+            {
+                return NotFound();
+            }
+            return View("~/Views/Rentals/Extend.cshtml", rental);
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpPost]
+        public IActionResult ExtendRental(int id, DateTime newDueDate)
+        {
+            var rental = _rentalService.GetRentalById(id);
+            if (rental == null)
+            {
+                return NotFound();
+            }
+            if(newDueDate <= DateTime.Now)
+            {
+                return View(rental);
+            }
+            _rentalService.ExtendRentalById(id, newDueDate);
+            return RedirectToAction("GetAllRentals");
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpPost]
+        public IActionResult CancelRental(int id)
+        {
+            var rental = _rentalService.GetRentalById(id);
+            if (rental == null)
+            {
+                return NotFound();
+            }
+            _rentalService.CancelRentalById(id);
+            return RedirectToAction("GetAllRentals");
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpPost]
+        public IActionResult ReturnRental(Rental rental)
+        {
+            if (rental == null)
+            {
+                return NotFound();
+            }
+            _rentalService.ReturnEquipment(rental);
+            return RedirectToAction("GetAllRentals");
         }
 
         /* Customers view */
@@ -248,6 +367,7 @@ namespace Midterm_EquipmentRental.Controllers
         public IActionResult GetCustomerDetails(int id)
         {
             var customer = _customerService.GetCustomerById(id);
+            customer.RentalHistory = _rentalService.GetAllRentals().Where(r => r.CustomerId == customer.Id).ToList();
             return View("~/Views/Customers/Details.cshtml", customer);
         }
 

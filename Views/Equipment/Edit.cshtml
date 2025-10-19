@@ -11,7 +11,7 @@
     <div class="row g-4">
         <!-- Form -->
         <div class="col-lg-7">
-            <form method="post" action="#" class="needs-validation" novalidate>
+            <form method="post" asp-controller="View" asp-action="UpdateEquipment" asp-route-id="@Model.Id" class="needs-validation" novalidate>
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <!-- ID (read-only) -->
@@ -68,7 +68,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary me-2">Save Changes</button>
-                <a href="#" class="btn btn-secondary">Cancel</a>
+                <a asp-controller="View" asp-action="GetAllEquipment" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
 
