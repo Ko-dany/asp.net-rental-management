@@ -223,5 +223,73 @@ namespace Midterm_EquipmentRental.Controllers
             var customers = _customerService.GetAllCustomers();
             return View("~/Views/Customers/Index.cshtml", customers);
         }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpGet]
+        public ActionResult AddCustomer()
+        {
+            return View("~/Views/Customers/Create.cshtml", new Customer());
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpPost]
+        public ActionResult AddCustomer(Customer customer)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(customer);
+            }
+            _customerService.AddCustomer(customer);
+            return RedirectToAction("GetAllCustomers");
+        }
+
+        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [HttpGet]
+        public IActionResult GetCustomerDetails(int id)
+        {
+            var customer = _customerService.GetCustomerById(id);
+            return View("~/Views/Customers/Details.cshtml", customer);
+        }
+
+        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [HttpGet]
+        public IActionResult UpdateCustomer(int id)
+        {
+            var customer = _customerService.GetCustomerById(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return View("~/Views/Customers/Edit.cshtml", customer);
+        }
+
+        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [HttpPost]
+        public IActionResult UpdateCustomer(int id, Customer customer)
+        {
+            if (id != customer.Id)
+            {
+                return BadRequest();
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(customer);
+            }
+            _customerService.UpdateCustomer(customer);
+            return RedirectToAction("GetAllCustomers");
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpPost]
+        public IActionResult DeleteCustomer(int id)
+        {
+            var customer = _customerService.GetCustomerById(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            _customerService.DeleteCustomer(customer);
+            return RedirectToAction("GetAllCustomers");
+        }
     }
 }
