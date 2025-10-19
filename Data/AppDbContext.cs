@@ -216,7 +216,7 @@ namespace Midterm_EquipmentRental.Data
                 {
                     Id = 3,
                     EquipmentId = 5,   // Pickup Truck
-                    CustomerId = 3,
+                    CustomerId = 2,
                     IssuedAt = new DateTime(2025, 9, 30),
                     ReturnedAt = new DateTime(2025, 10, 4),
                     Status = RentalStatus.Overdue

@@ -1,5 +1,41 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Midterm_EquipmentRental.Models.Rental
+@using Midterm_EquipmentRental.Models
+
 @{
+    ViewData["Title"] = "Create New Rental";
 }
+
+<div class="container mt-4">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    <form method="post" asp-action="IssueRental" class="needs-validation" novalidate>
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="EquipmentId" class="form-label">Select Equipment</label>
+            <select asp-for="EquipmentId" class="form-select">
+                <option value="">-- Select Equipment --</option>
+                @foreach (var eq in ViewBag.Equipments as IEnumerable<Equipment>)
+                {
+                    <option value="@eq.Id">@eq.Name</option>
+                }
+            </select>
+            <span asp-validation-for="EquipmentId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CustomerId" class="form-label">Select Customer</label>
+            <select asp-for="CustomerId" class="form-select">
+                <option value="">-- Select Customer --</option>
+                @foreach (var cu in ViewBag.Customers as IEnumerable<Customer>)
+                {
+                    <option value="@cu.Id">@cu.Name</option>
+                }
+            </select>
+            <span asp-validation-for="CustomerId" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary me-2">Create</button>
+        <a asp-controller="View" asp-action="GetAllRentals" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

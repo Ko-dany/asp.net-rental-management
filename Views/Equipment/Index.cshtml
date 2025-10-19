@@ -82,24 +82,18 @@
                             <span class="@StatusBadge(e.IsAvailable)">@StatusText(e.IsAvailable)</span>
                         </td>
                         <td>@e.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
-
-                        @if (isAdmin)
-                        {
-                            <td class="text-end">
-                                <a asp-controller="View" asp-action="GetEquipmentDetails" asp-route-id="@e.Id" class="btn btn-sm btn-outline-primary me-2">Details</a>
-                                <a asp-controller="View" asp-action="UpdateEquipment" asp-route-id="@e.Id" class="btn btn-sm btn-outline-primary me-2">Edit</a>
-                                <form asp-controller="View" asp-action="DeleteEquipment" asp-route-id="@e.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this equipment?');">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                                </form>
-                            </td>
-                        } 
-                        else
-                        {
-                            <td class="text-end">
-                                <a asp-controller="View" asp-action="GetEquipmentDetails" asp-route-id="@e.Id" class="btn btn-sm btn-outline-primary me-2">Details</a>
-                            </td>
-                        }
+                        <td class="text-end">
+                            <div class="d-flex justify-content-end align-items-center gap-2">
+                                <a asp-controller="View" asp-action="GetEquipmentDetails" asp-route-id="@e.Id" class="btn btn-sm btn-outline-info me-2">Details</a>
+                                @if (isAdmin){
+                                    <a asp-controller="View" asp-action="UpdateEquipment" asp-route-id="@e.Id" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+                                    <form asp-controller="View" asp-action="DeleteEquipment" asp-route-id="@e.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this equipment?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                       }
+                                </div>
+                        </td>
                     </tr>
                 }
             </tbody>

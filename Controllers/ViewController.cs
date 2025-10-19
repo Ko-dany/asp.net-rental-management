@@ -248,6 +248,31 @@ namespace Midterm_EquipmentRental.Controllers
         }
 
         [Authorize(Roles = UserRole.Admin)]
+        public ActionResult IssueRental()
+        {
+            ViewBag.Equipments = _equipmentService.GetAllAvailableEquipment();
+            ViewBag.Customers = _customerService.GetAllCustomers();
+            
+            return View("~/Views/Rentals/Create.cshtml");
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpPost]
+        public ActionResult IssueRental(Rental rental)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Equipments = _equipmentService.GetAllAvailableEquipment();
+                ViewBag.Customers = _customerService.GetAllCustomers();
+                return View("~/Views/Rentals/Create.cshtml", rental);
+            }
+            rental.IssuedAt = DateTime.Now;
+            rental.Status = RentalStatus.Active;
+            _rentalService.IssueEquipment(rental);
+            return RedirectToAction("GetAllRentals");
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
         [HttpGet]
         public IActionResult GetRentalDetails(int id)
         {
@@ -393,7 +418,7 @@ namespace Midterm_EquipmentRental.Controllers
             }
             if (!ModelState.IsValid)
             {
-                return View(customer);
+                return View("~/Views/Customers/Edit.cshtml", customer);
             }
             _customerService.UpdateCustomer(customer);
             return RedirectToAction("GetAllCustomers");
