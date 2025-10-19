@@ -50,7 +50,10 @@
     <div class="btn-group mb-3" role="group" aria-label="Filters">
         <a asp-controller="View" asp-action="GetAllEquipment" class="@TabClass("All")">All Equipment</a>
         <a asp-controller="View" asp-action="GetAllAvailableEquipment" class="@TabClass("Available")">Available</a>
-        <a asp-controller="View" asp-action="GetAllRentedEquipment" class="@TabClass("Rented")">Rented</a>
+        @if (isAdmin)
+        {
+            <a asp-controller="View" asp-action="GetAllRentedEquipment" class="@TabClass("Rented")">Rented</a>
+        }
     </div>
 
     <!-- Table -->

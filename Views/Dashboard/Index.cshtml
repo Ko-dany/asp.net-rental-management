@@ -51,17 +51,20 @@
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="card text-white bg-warning h-100 shadow-sm">
-                <div class="card-body">
-                    <h3 class="card-title mb-1">@rentedCount</h3>
-                    <div class="card-text">Currently Rented</div>
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                    <a asp-controller="View" asp-action="GetAllRentedEquipment" class="text-white text-decoration-underline">View Rented</a>
+        @if (isAdmin)
+        {
+            <div class="col-md-3">
+                <div class="card text-white bg-warning h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title mb-1">@rentedCount</h3>
+                        <div class="card-text">Currently Rented</div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <a asp-controller="View" asp-action="GetAllRentedEquipment" class="text-white text-decoration-underline">View Rented</a>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
 
         <div class="col-md-3">
             <div class="card text-white bg-danger h-100 shadow-sm">
@@ -84,19 +87,21 @@
     </div>
 
     <!-- Optional second card (matches your admin screenshot) -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-info h-100 shadow-sm">
-                <div class="card-body">
-                    <h3 class="card-title mb-1">@totalCustomers</h3>
-                    <div class="card-text">Total Customers</div>
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                    <a asp-controller="View" asp-action="GetAllCustomers" class="text-white text-decoration-underline">View All</a>
+    @if (isAdmin){
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-info h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title mb-1">@totalCustomers</h3>
+                        <div class="card-text">Total Customers</div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <a asp-controller="View" asp-action="GetAllCustomers" class="text-white text-decoration-underline">View All</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
 
     <!-- Bottom row: Quick Actions + System Status -->
     @* <div class="row g-4"> *@

@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Midterm_EquipmentRental.Models.ViewModels;
 using System.Data;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Midterm_EquipmentRental.Controllers
 {
@@ -17,13 +19,15 @@ namespace Midterm_EquipmentRental.Controllers
         private readonly IEquipmentService _equipmentService;
         private readonly ICustomerService _customerService;
         private readonly IRentalService _rentalService;
+        private readonly IDashboardService _dashboardService;
 
-        public ViewController(IAuthService authService, IEquipmentService equipmentService, ICustomerService customerService, IRentalService rentalService)
+        public ViewController(IAuthService authService, IEquipmentService equipmentService, ICustomerService customerService, IRentalService rentalService, IDashboardService dashboardService)
         {
             _authService = authService;
             _equipmentService = equipmentService;
             _customerService = customerService;
             _rentalService = rentalService;
+            _dashboardService = dashboardService;
         }
 
         /* Authentication view */
@@ -60,11 +64,18 @@ namespace Midterm_EquipmentRental.Controllers
             var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
 
             HttpContext.Session.SetString("role", roleClaim);
+            HttpContext.Session.SetString("username", loginRequest.Username);
             HttpContext.Session.SetString("JwtToken", token);
 
             return RedirectToAction("GoToDashboard");
         }
 
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", new LoginViewModel());
+        }
 
         [HttpGet]
         public IActionResult GoToDashboard()
@@ -74,10 +85,13 @@ namespace Midterm_EquipmentRental.Controllers
 
             if (role == UserRole.Admin || role == UserRole.User)
             {
-                return View("~/Views/Dashboard/Index.cshtml", new DashboardViewModel()
-                {
-                    IsAdmin = role == UserRole.Admin
-                });
+                DashboardViewModel dashboardViewModel = _dashboardService.GetDashboardInfo();
+                dashboardViewModel.UserName = HttpContext.Session.GetString("username") ?? "";
+                dashboardViewModel.RoleName = role;
+                dashboardViewModel.IsAdmin = role == UserRole.Admin;
+                dashboardViewModel.SystemStatus = "Online";
+
+                return View("~/Views/Dashboard/Index.cshtml", dashboardViewModel);
             }
             return RedirectToAction("Login");
         }
