@@ -103,14 +103,14 @@
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-danger">Cancel Rental</button>
                     </form>
-                    <form asp-controller="View" asp-action="ReturnRental" method="post" class="d-inline">
+                    <form asp-controller="View" asp-action="ReturnRental" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to force return this rental?');">
                         <input type="hidden" name="Id" value="@r.Id" />
                         <input type="hidden" name="EquipmentId" value="@r.EquipmentId" />
                         <input type="hidden" name="CustomerId" value="@r.CustomerId" />
                         <input type="hidden" name="IssuedAt" value="@r.IssuedAt.ToString("o")" />
                         <input type="hidden" name="ReturnedAt" value="@r.ReturnedAt?.ToString("o")" />
                         <input type="hidden" name="Status" value="@r.Status" />
-
+                        @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-success">Mark as Returned</button>
                     </form>
                     <a asp-controller="View" asp-action="GetAllRentals" class="btn btn-outline-secondary">Back to Rentals</a>
