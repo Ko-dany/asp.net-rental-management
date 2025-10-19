@@ -62,37 +62,24 @@ namespace Midterm_EquipmentRental.Controllers
             HttpContext.Session.SetString("role", roleClaim);
             HttpContext.Session.SetString("JwtToken", token);
 
-            return user.Role switch
+            return RedirectToAction("GoToDashboard");
+        }
+
+
+        [HttpGet]
+        public IActionResult GoToDashboard()
+        {
+            var role = HttpContext.Session.GetString("role");
+            if (string.IsNullOrEmpty(role)) return RedirectToAction("Login");
+
+            if (role == UserRole.Admin || role == UserRole.User)
             {
-                UserRole.Admin => RedirectToAction("AdminDashboard"),
-                UserRole.User => RedirectToAction("UserDashboard"),
-                _ => RedirectToAction("Login")
-            };
-        }
-
-
-        [HttpGet]
-        public IActionResult AdminDashboard()
-        {
-            var role = HttpContext.Session.GetString("role");
-            if (string.IsNullOrEmpty(role)) return RedirectToAction("Login");
-
-            if (role != UserRole.Admin)
-                return RedirectToAction("Login");
-
-            return View("~/Views/Dashboard/Index.cshtml");
-        }
-
-        [HttpGet]
-        public IActionResult UserDashboard()
-        {
-            var role = HttpContext.Session.GetString("role");
-            if (string.IsNullOrEmpty(role)) return RedirectToAction("Login");
-
-            if (role != UserRole.User)
-                return RedirectToAction("Login");
-
-            return View("~/Views/Dashboard/Index.cshtml");
+                return View("~/Views/Dashboard/Index.cshtml", new DashboardViewModel()
+                {
+                    IsAdmin = role == UserRole.Admin
+                });
+            }
+            return RedirectToAction("Login");
         }
 
         /* Equipments view */
@@ -141,6 +128,68 @@ namespace Midterm_EquipmentRental.Controllers
                 IsAdmin = role == UserRole.Admin
             };
             return View("~/Views/Equipment/Index.cshtml", equipmentsList);
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpGet]
+        public ActionResult AddEquipment()
+        {
+            return View("~/Views/Equipment/Create.cshtml", new Equipment());
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpPost]
+        public ActionResult AddEquipment(Equipment equipment)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(equipment);
+            }
+            equipment.CreatedAt = DateTime.Now;
+            _equipmentService.AddEquipment(equipment);
+            return RedirectToAction("GetAllEquipment");
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpGet]
+        public IActionResult UpdateEquipment(int id)
+        {
+            var equipment = _equipmentService.GetEquipmentById(id);
+            if (equipment == null)
+            {
+                return NotFound();
+            }
+            return View("~/Views/Equipment/Edit.cshtml", equipment);
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpPost]
+        public IActionResult UpdateEquipment(int id, Equipment equipment)
+        {
+            if(id != equipment.Id)
+            {
+                return BadRequest();
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(equipment);
+            }
+            equipment.CreatedAt = DateTime.Now;
+            _equipmentService.UpdateEquipment(equipment);
+            return RedirectToAction("GetAllEquipment");
+        }
+
+        [Authorize(Roles = UserRole.Admin)]
+        [HttpPost]
+        public IActionResult DeleteEquipment(int id)
+        {
+            var existingEquipment = _equipmentService.GetEquipmentById(id);
+            if (existingEquipment == null) 
+            {
+                return NotFound();
+            }
+            _equipmentService.DeleteEquipment(existingEquipment);
+            return RedirectToAction("GetAllEquipment");
         }
 
         /* Rentals view */

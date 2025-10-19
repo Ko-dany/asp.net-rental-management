@@ -25,6 +25,8 @@ namespace Midterm_EquipmentRental.Repositories
             existingEquipment.Category = equipment.Category;
             existingEquipment.Condition = equipment.Condition;
             existingEquipment.RentalPrice = equipment.RentalPrice;
+            existingEquipment.IsAvailable = equipment.IsAvailable;
+            existingEquipment.CreatedAt = equipment.CreatedAt;
         }
 
         public void DeleteEquipment(Equipment equipment) { _context.Equipments.Remove(equipment); }

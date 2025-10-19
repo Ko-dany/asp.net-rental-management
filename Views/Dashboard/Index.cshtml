@@ -1,8 +1,6 @@
 ﻿@model Midterm_EquipmentRental.Models.ViewModels.DashboardViewModel
 
 @{
-    ViewData["Title"] = "Equipment Rental Dashboard";
-
     // Toggle here (or rely on Model.IsAdmin):
     bool isAdmin = Model?.IsAdmin ?? false;
 
@@ -19,10 +17,12 @@
     string userName = Model?.UserName ?? "user";
     string roleName = Model?.RoleName ?? (isAdmin ? "Admin" : "User");
     string sysStatus = Model?.SystemStatus ?? "Online";
+
+    ViewData["Title"] = isAdmin ? "Admin Equipment Rental Dashboard" : "User Equipment Rental Dashboard";
 }
 
 <div class="container mt-4">
-    <h2 class="display-5 fw-semibold">Equipment Rental Dashboard</h2>
+    <h2 class="display-5 fw-semibold">@ViewData["Title"]</h2>
     <p class="text-muted">Welcome to the Equipment Rental Management System</p>
 
     <!-- Summary cards row -->

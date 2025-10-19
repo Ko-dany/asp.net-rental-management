@@ -42,15 +42,15 @@
         <h2 class="mb-0">Equipment</h2>
         @if (isAdmin)
         {
-            <a href="#" class="btn btn-primary">Add New Equipment</a>
+            <a asp-controller="View" asp-action="AddEquipment" class="btn btn-primary">Add New Equipment</a>
         }
     </div>
 
     <!-- Filter tabs (just # for now) -->
     <div class="btn-group mb-3" role="group" aria-label="Filters">
-        <a href="#" class="@TabClass("All")">All Equipment</a>
-        <a href="#" class="@TabClass("Available")">Available</a>
-        <a href="#" class="@TabClass("Rented")">Rented</a>
+        <a asp-controller="View" asp-action="GetAllEquipment" class="@TabClass("All")">All Equipment</a>
+        <a asp-controller="View" asp-action="GetAllAvailableEquipment" class="@TabClass("Available")">Available</a>
+        <a asp-controller="View" asp-action="GetAllRentedEquipment" class="@TabClass("Rented")">Rented</a>
     </div>
 
     <!-- Table -->
@@ -86,8 +86,11 @@
                         @if (isAdmin)
                         {
                             <td class="text-end">
-                                <a href="#" class="btn btn-sm btn-outline-primary me-2">Edit</a>
-                                <a href="#" class="btn btn-sm btn-outline-danger">Delete</a>
+                                <a asp-controller="View" asp-action="UpdateEquipment" asp-route-id="@e.Id" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+                                <form asp-controller="View" asp-action="DeleteEquipment" asp-route-id="@e.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
                             </td>
                         }
                     </tr>

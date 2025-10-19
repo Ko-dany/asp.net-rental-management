@@ -1,4 +1,4 @@
-﻿@model Midterm_EquipmentRental.Models.ViewModels.EquipmentEditViewModel
+﻿@model Midterm_EquipmentRental.Models.Equipment
 @using Midterm_EquipmentRental.Models
 
 @{
@@ -24,13 +24,24 @@
 
                 <div class="mb-3">
                     <label asp-for="Name" class="form-label">Equipment Name</label>
-                    <input asp-for="Name" class="form-control" />
+                    <input asp-for="Name" class="form-control" value="@Model.Name"/>
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Equipment Description</label>
+                    <input asp-for="Description" class="form-control" value="@Model.Description"/>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
                     <label asp-for="Category" class="form-label">Category</label>
-                    <input asp-for="Category" class="form-control" />
+                    <select asp-for="Category" class="form-select">
+                        @foreach (var c in Enum.GetValues(typeof(EquipmentCategory)))
+                        {
+                            <option value="@c" selected="@(Model.Category.Equals(c))">@c</option>
+                        }
+                    </select>
                     <span asp-validation-for="Category" class="text-danger"></span>
                 </div>
 
@@ -43,6 +54,12 @@
                         }
                     </select>
                     <span asp-validation-for="Condition" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RentalPrice" class="form-label">Rental Price</label>
+                    <input asp-for="RentalPrice" class="form-control" type="number" value="@Model.RentalPrice"/>
+                    <span asp-validation-for="RentalPrice" class="text-danger"></span>
                 </div>
 
                 <div class="form-check mb-4">

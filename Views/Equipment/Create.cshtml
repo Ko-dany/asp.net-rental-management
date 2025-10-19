@@ -1,4 +1,4 @@
-﻿@model Midterm_EquipmentRental.Models.ViewModels.EquipmentCreateViewModel
+﻿@model Midterm_EquipmentRental.Models.Equipment
 @using Midterm_EquipmentRental.Models
 
 @{
@@ -21,8 +21,19 @@
                 </div>
 
                 <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Equipment Description</label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
                     <label asp-for="Category" class="form-label">Category</label>
-                    <input asp-for="Category" class="form-control" />
+                    <select asp-for="Category" class="form-select">
+                        @foreach (var c in Enum.GetValues(typeof(EquipmentCategory)))
+                        {
+                            <option value="@c">@c</option>
+                        }
+                    </select>
                     <span asp-validation-for="Category" class="text-danger"></span>
                 </div>
 
@@ -37,13 +48,19 @@
                     <span asp-validation-for="Condition" class="text-danger"></span>
                 </div>
 
+                <div class="mb-3">
+                    <label asp-for="RentalPrice" class="form-label">Rental Price</label>
+                    <input asp-for="RentalPrice" class="form-control" type="number" />
+                    <span asp-validation-for="RentalPrice" class="text-danger"></span>
+                </div>
+
                 <div class="form-check mb-4">
                     <input asp-for="IsAvailable" class="form-check-input" />
                     <label asp-for="IsAvailable" class="form-check-label">Is Available</label>
                 </div>
 
                 <button type="submit" class="btn btn-primary me-2">Create</button>
-                <a href="#" class="btn btn-secondary">Cancel</a>
+                <a asp-controller="View" asp-action="GetAllEquipment" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
 
