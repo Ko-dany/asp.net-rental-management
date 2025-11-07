@@ -7,6 +7,7 @@ namespace Midterm_EquipmentRental.Data
     {
 
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<AppUser> Users { get; set; }
         public DbSet<Equipment> Equipments { get; set; }
         public DbSet<Rental> Rentals { get; set; }
 
@@ -249,6 +250,22 @@ namespace Midterm_EquipmentRental.Data
                     Status = RentalStatus.Returned
                 }
             );
+
+            modelBuilder.Entity<AppUser>().HasData(
+                    new AppUser
+                    {
+                        Id = 1,
+                        Email = "iamgo910@gmail.com",
+                        Role = UserRole.Admin,
+                    },
+                    new AppUser
+                    {
+                        Id = 2,
+                        Email = "Gsiewert2384@conestogac.on.ca",
+                        Role = UserRole.User
+                    }
+             );
+
         }
 
     }
