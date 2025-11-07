@@ -10,6 +10,8 @@ using Midterm_EquipmentRental.Models.ViewModels;
 using System.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace Midterm_EquipmentRental.Controllers
 {
@@ -37,6 +39,46 @@ namespace Midterm_EquipmentRental.Controllers
             return View(new LoginViewModel());
         }
 
+        [HttpGet("auth/login")]
+        public IActionResult Login(string returnUrl = "/auth/callback")
+        {
+            HttpContext.Session.Clear();
+            var props = new AuthenticationProperties
+            {
+                RedirectUri = returnUrl
+            };
+            props.Items["prompt"] = "select_account";
+            return Challenge(props, "Google");
+        }
+
+        [HttpGet("auth/callback")]
+        public IActionResult LoginCallback()
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            return RedirectToAction("LoginCallback", "Auth", new { email });
+        }
+
+        [HttpGet("auth/logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            var props = new AuthenticationProperties
+            {
+                RedirectUri = "/"
+            };
+            return SignOut(props, CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
+
+        [HttpGet("auth/denied")]
+        public IActionResult AccessDenied()
+        {
+            return Content("Access Denied");
+        }
+
+        /*
+         * Local JWT token
+         * 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -77,6 +119,7 @@ namespace Midterm_EquipmentRental.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login", new LoginViewModel());
         }
+        */
 
         [HttpGet]
         public IActionResult GoToDashboard()
@@ -88,7 +131,7 @@ namespace Midterm_EquipmentRental.Controllers
             if (role == UserRole.Admin || role == UserRole.User)
             {
                 DashboardViewModel dashboardViewModel = _dashboardService.GetDashboardInfo();
-                dashboardViewModel.UserName = HttpContext.Session.GetString("username") ?? "";
+                //dashboardViewModel.UserName = HttpContext.Session.GetString("username") ?? "";
                 dashboardViewModel.RoleName = role;
                 dashboardViewModel.IsAdmin = role == UserRole.Admin;
                 dashboardViewModel.SystemStatus = "Online";
@@ -100,7 +143,7 @@ namespace Midterm_EquipmentRental.Controllers
         }
 
         /* Equipments view */
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<Equipment>> GetAllEquipment()
         {
@@ -115,7 +158,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Equipment/Index.cshtml", equipmentsList);
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<Equipment>> GetAllAvailableEquipment()
         {
@@ -131,7 +174,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Equipment/Index.cshtml", equipmentsList);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<Equipment>> GetAllRentedEquipment()
         {
@@ -147,14 +190,14 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Equipment/Index.cshtml", equipmentsList);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpGet]
         public ActionResult AddEquipment()
         {
             return View("~/Views/Equipment/Create.cshtml", new Equipment());
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpPost]
         public ActionResult AddEquipment(Equipment equipment)
         {
@@ -167,7 +210,7 @@ namespace Midterm_EquipmentRental.Controllers
             return RedirectToAction("GetAllEquipment");
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpGet]
         public IActionResult UpdateEquipment(int id)
         {
@@ -179,7 +222,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Equipment/Edit.cshtml", equipment);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpPost]
         public IActionResult UpdateEquipment(int id, Equipment equipment)
         {
@@ -196,7 +239,7 @@ namespace Midterm_EquipmentRental.Controllers
             return RedirectToAction("GetAllEquipment");
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpPost]
         public IActionResult DeleteEquipment(int id)
         {
@@ -209,7 +252,7 @@ namespace Midterm_EquipmentRental.Controllers
             return RedirectToAction("GetAllEquipment");
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet]
         public IActionResult GetEquipmentDetails(int id)
         {
@@ -221,7 +264,7 @@ namespace Midterm_EquipmentRental.Controllers
         }
 
         /* Rentals view */
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<Rental>> GetAllRentals()
         {
@@ -242,7 +285,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Rentals/Index.cshtml", rentals);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<Rental>> GetActiveRentals()
         {
@@ -253,7 +296,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Rentals/Index.cshtml", rentals);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<Rental>> GetCompletedRentals()
         {
@@ -264,7 +307,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Rentals/Index.cshtml", rentals);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<Rental>> GetOverdueRentals()
         {
@@ -275,7 +318,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Rentals/Index.cshtml", rentals);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         public ActionResult IssueRental()
         {
             ViewBag.Equipments = _equipmentService.GetAllAvailableEquipment();
@@ -284,7 +327,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Rentals/Create.cshtml");
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpPost]
         public ActionResult IssueRental(Rental rental)
         {
@@ -300,7 +343,7 @@ namespace Midterm_EquipmentRental.Controllers
             return RedirectToAction("GetAllRentals");
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpGet]
         public IActionResult GetRentalDetails(int id)
         {
@@ -333,7 +376,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Rentals/Details.cshtml", rentalDetails);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpGet]
         public IActionResult GetExtendRental(int id)
         {
@@ -345,7 +388,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Rentals/Extend.cshtml", rental);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpPost]
         public IActionResult ExtendRental(int id, DateTime newDueDate)
         {
@@ -362,7 +405,7 @@ namespace Midterm_EquipmentRental.Controllers
             return RedirectToAction("GetAllRentals");
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpPost]
         public IActionResult CancelRental(int id)
         {
@@ -375,7 +418,7 @@ namespace Midterm_EquipmentRental.Controllers
             return RedirectToAction("GetAllRentals");
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpPost]
         public IActionResult ReturnRental(Rental rental)
         {
@@ -388,7 +431,7 @@ namespace Midterm_EquipmentRental.Controllers
         }
 
         /* Customers view */
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<Customer>> GetAllCustomers()
         {
@@ -410,14 +453,14 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Customers/Index.cshtml", customers);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpGet]
         public ActionResult AddCustomer()
         {
             return View("~/Views/Customers/Create.cshtml", new Customer());
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpPost]
         public ActionResult AddCustomer(Customer customer)
         {
@@ -429,7 +472,7 @@ namespace Midterm_EquipmentRental.Controllers
             return RedirectToAction("GetAllCustomers");
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet]
         public IActionResult GetCustomerDetails(int id)
         {
@@ -441,7 +484,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Customers/Details.cshtml", customer);
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet]
         public IActionResult UpdateCustomer(int id)
         {
@@ -453,7 +496,7 @@ namespace Midterm_EquipmentRental.Controllers
             return View("~/Views/Customers/Edit.cshtml", customer);
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpPost]
         public IActionResult UpdateCustomer(int id, Customer customer)
         {
@@ -469,7 +512,7 @@ namespace Midterm_EquipmentRental.Controllers
             return RedirectToAction("GetAllCustomers");
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpPost]
         public IActionResult DeleteCustomer(int id)
         {

@@ -250,7 +250,6 @@ namespace Midterm_EquipmentRental.Data
                     Status = RentalStatus.Returned
                 }
             );
-
             modelBuilder.Entity<AppUser>().HasData(
                     new AppUser
                     {
@@ -261,7 +260,7 @@ namespace Midterm_EquipmentRental.Data
                     new AppUser
                     {
                         Id = 2,
-                        Email = "Gsiewert2384@conestogac.on.ca",
+                        Email = "danyfordahyeon@gmail.com",
                         Role = UserRole.User
                     }
              );

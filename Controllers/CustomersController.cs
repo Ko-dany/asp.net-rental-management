@@ -16,7 +16,7 @@ namespace Midterm_EquipmentRental.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<Customer>> GetAllCustomers()
         {
@@ -24,7 +24,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok(customers);
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet("{id}")]
         public ActionResult<Customer> GetCustomerById(int id)
         {
@@ -32,7 +32,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok(customer);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpPost]
         public ActionResult AddCustomer(Customer customer)
         {
@@ -41,7 +41,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpPut("{id}")]
         public ActionResult UpdateCustomer(int id, Customer customer)
         {
@@ -52,7 +52,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpDelete("{id}")]
         public ActionResult DeleteCustomer(int id)
         {
@@ -62,7 +62,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet("{id}/rentals")]
         public ActionResult<IEnumerable<Rental>?> GetCustomerRentalHistoryById(int id)
         {
@@ -70,7 +70,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok(customerRentals);
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet("{id}/active-rental")]
         public ActionResult<IEnumerable<Rental>?> GetCustomerActiveRentalsById(int id)
         {

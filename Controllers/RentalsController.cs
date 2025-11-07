@@ -17,7 +17,7 @@ namespace Midterm_EquipmentRental.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<Rental>> GetAllRentals()
         {
@@ -25,7 +25,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok(rentals);
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet("{id}")]
         public ActionResult<Rental> GetRentalById(int id)
         {
@@ -33,7 +33,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok(rental);
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpPost("issue")]
         public ActionResult IssueEquipment(Rental rental)
         {
@@ -42,7 +42,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpPost("return")]
         public ActionResult ReturnEquipment(Rental rental)
         {
@@ -51,7 +51,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet("active")]
         public ActionResult<IEnumerable<Rental>> GetActiveRentals()
         {
@@ -59,7 +59,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok(rentals);
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet("completed")]
         public ActionResult<IEnumerable<Rental>> GetCompletedRentals()
         {
@@ -67,7 +67,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok(rentals);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpGet("overdue")]
         public ActionResult<IEnumerable<Rental>> GetOverdueRentals()
         {
@@ -75,7 +75,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok(rentals);
         }
 
-        [Authorize(Roles = $"{UserRole.Admin}, {UserRole.User}")]
+        [Authorize]
         [HttpGet("equipment/{id}")]
         public ActionResult<IEnumerable<Rental>> GetRentalHistoryByEquipmentId(int id)
         {
@@ -83,7 +83,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok(rentals);
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpPut]
         public ActionResult ExtendRentalById(int id, DateTime newDate)
         {
@@ -91,7 +91,7 @@ namespace Midterm_EquipmentRental.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         [HttpDelete]
         public ActionResult CancelRentalById(int id)
         {

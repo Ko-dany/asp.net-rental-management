@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Midterm_EquipmentRental.Data;
 using Midterm_EquipmentRental.Repositories;
 using Midterm_EquipmentRental.Services;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,12 +37,12 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-/* Add JWT authentication */
+/* Add JWT authentication 
 var jwtSecret = builder.Configuration["JwtSettings:Secret"];
 
 builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
 {
-    /* Read the JWT from user's sessions */
+    // Read the JWT from user's sessions 
     options.Events = new JwtBearerEvents
     {
         OnMessageReceived = context =>
@@ -61,6 +64,26 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
         IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSecret))
     };
 });
+*/
+
+/* Cookie Authentication from google.com */
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+}).AddCookie(options =>
+{
+    options.LoginPath = "/auth/login";
+    options.AccessDeniedPath = "/auth/denied";
+    options.LogoutPath = "/auth/logout";
+}).AddGoogle(options =>
+{
+    options.ClientId = builder.Configuration["Authentication:Google:ClientId"] ?? "";
+    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? "";
+    options.Scope.Add("profile");
+    options.Scope.Add("email");
+});
+
 builder.Services.AddAuthorization();
 
 // Add services to the container.

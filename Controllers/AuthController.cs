@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Midterm_EquipmentRental.Models;
-using Midterm_EquipmentRental.Services;
+using Midterm_EquipmentRental.Data;
 
 namespace Midterm_EquipmentRental.Controllers
 {
@@ -8,20 +7,31 @@ namespace Midterm_EquipmentRental.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _context;
+        private readonly AppDbContext _context;
 
-        public AuthController(IAuthService context)
+        public AuthController(AppDbContext context)
         {
             _context = context;
         }
 
-        [HttpPost("login")]
-        public ActionResult Login([FromBody] LoginRequest loginRequest)
+        [HttpGet("LoginCallback")]
+        public async Task<IActionResult> LoginCallback(string email)
         {
-            var user = _context.ValidateCredentials(loginRequest);
-            if (user == null) { return Unauthorized("Invalid username or password"); }
-            var token = _context.GenerateToken(user);
-            return Ok(new { token });
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest("Email not provided");
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Email == email);
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            HttpContext.Session.SetString("userId", user.Id.ToString());
+            HttpContext.Session.SetString("role", user.Role);
+
+            return RedirectToAction("GoToDashboard", "View");
         }
     }
 }
